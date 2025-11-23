@@ -1,43 +1,44 @@
 import * as fs from "@std/fs";
 
-import type { BrowserContext } from "./types.ts";
+import type { Browser, BrowserContext, Platform } from "./types.ts";
 
 import { createBrowser } from "./utils/browser.ts";
 import GitHub from "./plats/github.ts";
 
 const img = "";
 
+async function updatePfp(browser: Browser, platform: Platform) {
+	let context: BrowserContext;
+
+	if (await fs.exists(platform.cookiesPath)) {
+		context = await browser.newContext({ storageState: platform.cookiesPath });
+	} else {
+		context = await browser.newContext();
+	}
+
+	const page = await context.newPage();
+
+	const loggedIn = await platform.checkStatus(page);
+	if (!loggedIn) {
+		await platform.performLogin(page);
+		await platform.performVerify(page);
+
+		await page.waitForURL((url) => url.href === platform.homeUrl);
+		await context.storageState({ path: platform.cookiesPath });
+	}
+
+	await platform.performUpdate(page, img);
+
+	await page.close();
+	await context.close();
+}
+
 async function main() {
 	await fs.ensureDir("cookies");
 
 	const browser = await createBrowser();
 	try {
-		let context: BrowserContext;
-		const github = GitHub;
-
-		if (await fs.exists(github.cookiesPath)) {
-			context = await browser.newContext({
-				storageState: github.cookiesPath,
-			});
-		} else {
-			context = await browser.newContext();
-		}
-
-		const page = await context.newPage();
-
-		const loggedIn = await github.checkStatus(page);
-		if (!loggedIn) {
-			await github.performLogin(page);
-			await github.performVerify(page);
-
-			await page.waitForURL((url) => url.href === github.homeUrl);
-			await context.storageState({ path: github.cookiesPath });
-		}
-
-		await github.performUpdate(page, img);
-
-		await page.close();
-		await context.close();
+		await updatePfp(browser, GitHub);
 	} catch (err) {
 		throw err;
 	} finally {
