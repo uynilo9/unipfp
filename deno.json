@@ -1,4 +1,11 @@
 {
+  "fmt": {
+    "lineWidth": 114514,
+    "useTabs": true,
+    "indentWidth": 4,
+    "semiColons": true,
+    "include": ["src/"]
+  },
   "tasks": {
     "start": "deno run -A ./src/main.ts"
   },
