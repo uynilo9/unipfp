@@ -1,6 +1,7 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@hectorm/otpauth@^9.4.1": "9.4.1",
     "jsr:@std/dotenv@~0.225.5": "0.225.5",
     "jsr:@std/fs@^1.0.20": "1.0.20",
     "jsr:@std/internal@^1.0.12": "1.0.12",
@@ -10,6 +11,9 @@
     "npm:puppeteer-extra-plugin-stealth@^2.11.2": "2.11.2_playwright-extra@4.3.6__playwright@1.56.1_playwright@1.56.1"
   },
   "jsr": {
+    "@hectorm/otpauth@9.4.1": {
+      "integrity": "136c8a6208016caa91e19995dcb4b35bbf30d416b1cfe1f4f9d2e6ca44ff03ab"
+    },
     "@std/dotenv@0.225.5": {
       "integrity": "9ce6f9d0ec3311f74a32535aa1b8c62ed88b1ab91b7f0815797d77a6f60c922f"
     },
@@ -304,6 +308,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@hectorm/otpauth@^9.4.1",
       "jsr:@std/dotenv@~0.225.5",
       "jsr:@std/fs@^1.0.20",
       "npm:playwright-extra@^4.3.6",

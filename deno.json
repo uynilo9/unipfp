@@ -3,6 +3,7 @@
     "start": "deno run -A ./src/main.ts"
   },
   "imports": {
+    "@hectorm/otpauth": "jsr:@hectorm/otpauth@^9.4.1",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.5",
     "@std/fs": "jsr:@std/fs@^1.0.20",
     "playwright": "npm:playwright@^1.56.1",
