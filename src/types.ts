@@ -10,10 +10,12 @@ export interface Platform {
     credentials: {
         username?: string;
         password?: string;
+        secret?:   string;
     };
 
     checkStatus(page: Page):                Promise<boolean>;
     performLogin(page: Page):               Promise<void>;
+    performVerify(page: Page):              Promise<void>;
     performUpdate(page: Page, img: string): Promise<void>;
 }
 

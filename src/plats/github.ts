@@ -3,6 +3,7 @@ import "@std/dotenv/load";
 import type { Page, Platform } from "../types.ts";
 
 import { typeLikeAHuman } from "../utils/browser.ts";
+import { generate2FAToken } from "../utils/totp.ts";
 
 export default <Platform> {
     name:        "GitHub",
@@ -14,6 +15,7 @@ export default <Platform> {
     credentials: {
         username: Deno.env.get("GITHUB_USERNAME"),
         password: Deno.env.get("GITHUB_PASSWORD"),
+        secret:   Deno.env.get("GITHUB_SECRET"),
     },
 
     async checkStatus(page: Page) {
@@ -32,6 +34,19 @@ export default <Platform> {
             await typeLikeAHuman(page, "#password", password);
 
             await page.click("input[type=\"submit\"]");
+        }
+    },
+
+    async performVerify(page: Page) {
+        if (!await page.locator("input#app_totp").isVisible())
+            return;
+
+        const secret = this.credentials.secret;
+        if (secret) {
+            const token = generate2FAToken(secret);
+            await typeLikeAHuman(page, "input#app_totp", token);
+
+            await page.waitForTimeout(2000);
         }
     },
 

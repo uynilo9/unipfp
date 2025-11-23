@@ -25,6 +25,7 @@ async function main() {
 
         if (!loggedIn) {
             await github.performLogin(page);
+            await github.performVerify(page);
             await page.waitForURL(url => url.href === github.homeUrl);
 
             await context.storageState({ path: github.cookiesPath });
