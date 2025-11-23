@@ -17,7 +17,8 @@ export default <Platform> {
     },
 
     async checkStatus(page: Page) {
-        return await page.locator("body.logged-in").isVisible();
+        await page.goto(this.loginUrl);
+        return await page.locator("body.logged-out").isHidden();
     },
 
     async performLogin(page: Page) {
