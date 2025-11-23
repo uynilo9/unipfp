@@ -1,4 +1,13 @@
-import type { Page } from "../types.ts";
+import type { Browser, Page } from "../types.ts";
+
+import { chromium } from "playwright-extra";
+import stealth from "puppeteer-extra-plugin-stealth";
+
+export async function createBrowser(): Promise<Browser> {
+    chromium.use(stealth());
+
+    return await chromium.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"], headless: false });
+}
 
 export async function typeLikeAHuman(page: Page, selector: string, text: string) {
     const element = page.locator(selector);

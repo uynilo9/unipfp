@@ -17,4 +17,4 @@ export interface Platform {
     performUpdate(page: Page, img: string): Promise<void>;
 }
 
-export type { Page } from "playwright";
+export type { Browser, BrowserContext, Page } from "playwright";
