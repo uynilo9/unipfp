@@ -4,6 +4,7 @@ import type { Browser, BrowserContext, Platform } from "./types.ts";
 
 import { createBrowser } from "./utils/browser.ts";
 import GitHub from "./plats/github.ts";
+import Twitch from "./plats/twitch.ts";
 
 const img = "";
 
@@ -39,6 +40,7 @@ async function main() {
 	const browser = await createBrowser();
 	try {
 		await updatePfp(browser, GitHub);
+		await updatePfp(browser, Twitch);
 	} catch (err) {
 		throw err;
 	} finally {
