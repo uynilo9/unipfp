@@ -38,13 +38,13 @@ export default <Platform> {
     },
 
     async performVerify(page: Page) {
-        if (!await page.locator("input#app_totp").isVisible())
+        if (!await page.locator("#app_totp").isVisible())
             return;
 
         const secret = this.credentials.secret;
         if (secret) {
             const token = generate2FAToken(secret);
-            await typeLikeAHuman(page, "input#app_totp", token);
+            await typeLikeAHuman(page, "#app_totp", token);
 
             await page.waitForTimeout(2000);
         }
