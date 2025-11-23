@@ -1,0 +1,7 @@
+import type { Page } from "../types.ts";
+
+export async function typeLikeAHuman(page: Page, selector: string, text: string) {
+    const element = page.locator(selector);
+    await element.waitFor({ state: "visible" });
+    await element.pressSequentially(text, { delay: Math.floor(Math.random()*100)+50 });
+}
