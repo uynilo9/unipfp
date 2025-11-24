@@ -1,10 +1,10 @@
-import type { Browser, Page } from "../types.ts";
-
 import * as path from "@std/path";
+
+import type { Browser, Page } from "../types.ts";
 
 import { chromium } from "playwright-extra";
 
-const extension = path.resolve("src/utils/extension");
+const extension = path.resolve(path.dirname(import.meta.url), "extension");
 
 export async function createBrowser(): Promise<Browser> {
 	return await chromium.launch({
