@@ -3,7 +3,7 @@ import "@std/dotenv/load";
 import type { Page, Platform } from "../types.ts";
 
 import { typeLikeAHuman } from "../utils/browser.ts";
-import { generate2FAToken } from "../utils/totp.ts";
+import { generateTotp } from "../utils/totp.ts";
 
 export default <Platform> {
 	name: "Twitch",
@@ -48,7 +48,7 @@ export default <Platform> {
 
 		const secret = this.credentials.secret;
 		if (secret) {
-			const token = generate2FAToken(secret);
+			const token = generateTotp(secret);
 			await typeLikeAHuman(page, "#authenticator-token-input", token);
 
 			await page.click('label:has-text("Remember this device for 30 days")');

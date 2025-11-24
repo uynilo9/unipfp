@@ -1,6 +1,6 @@
 import * as otpauth from "@hectorm/otpauth";
 
-export function generate2FAToken(secret: string): string {
+export function generateTotp(secret: string): string {
 	const totp = new otpauth.TOTP({
 		algorithm: "SHA1",
 		digits: 6,
