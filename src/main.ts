@@ -9,7 +9,7 @@ import Twitch from "./plats/twitch.ts";
 
 const img = "";
 
-async function updatePfp(browser: Browser, platform: Platform): Promise<Result> {
+async function updatePfpViaBrowser(browser: Browser, platform: Platform): Promise<Result> {
 	let context: BrowserContext;
 
 	if (await fs.exists(platform.cookiesPath)) {
@@ -52,12 +52,12 @@ async function main() {
 		throw browser.error;
 	}
 
-	const github = await updatePfp(browser.value, GitHub);
+	const github = await updatePfpViaBrowser(browser.value, GitHub);
 	if (github.type === "err") {
 		throw github.error;
 	}
 
-	const twitch = await updatePfp(browser.value, Twitch);
+	const twitch = await updatePfpViaBrowser(browser.value, Twitch);
 	if (twitch.type === "err") {
 		throw twitch.error;
 	}
