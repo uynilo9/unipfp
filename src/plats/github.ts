@@ -57,7 +57,7 @@ export default <Platform> {
 		const imgInput = page.locator('input[type="file"]#avatar_upload');
 		await imgInput.setInputFiles(img);
 
-		const setButton = page.locator('button:has-text("Set new profile picture")');
+		const setButton = page.locator('#avatar-crop-form button[type="submit"]');
 		await setButton.waitFor();
 		await setButton.click();
 

@@ -27,7 +27,7 @@ export default <Platform> {
 	},
 
 	async performLogin(page: Page) {
-		// await page.goto(this.loginUrl);
+		await page.goto(this.loginUrl);
 
 		const username = this.credentials.username;
 		const password = this.credentials.password;
@@ -41,8 +41,7 @@ export default <Platform> {
 	},
 
 	async performVerify(page: Page) {
-		const totpInput = page.locator("#authenticator-token-input");
-		if (!await totpInput.first().isVisible()) {
+		if (!await page.locator("#authenticator-token-input").isVisible()) {
 			return;
 		}
 
@@ -51,7 +50,7 @@ export default <Platform> {
 			const token = generateTotp(secret);
 			await typeLikeAHuman(page, "#authenticator-token-input", token);
 
-			await page.click('label:has-text("Remember this device for 30 days")');
+			await page.click('input[name="rememberMe"]+label');
 			await page.click('button[type="submit"]');
 
 			await page.waitForTimeout(2000);
@@ -75,7 +74,7 @@ export default <Platform> {
 
 		await page.waitForTimeout(2000);
 
-		const setButton = page.locator('button:has-text("Save")').last();
+		const setButton = page.locator('div.profile-edit button').last();
 		await setButton.waitFor();
 		await setButton.click();
 
