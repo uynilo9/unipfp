@@ -1,11 +1,7 @@
-import * as path from "@std/path";
-
 import { Err, Ok } from "../types.ts";
 import type { Browser, Page, Result } from "../types.ts";
 
 import { chromium } from "playwright-extra";
-
-const extension = path.resolve(path.dirname(import.meta.url), "extension");
 
 export async function createBrowser(): Promise<Result<Browser, unknown>> {
 	try {
@@ -15,7 +11,6 @@ export async function createBrowser(): Promise<Result<Browser, unknown>> {
 					"--no-sandbox",
 					"--disable-setuid-sandbox",
 					"--disable-blink-features=AutomationControlled",
-					`--load-extension=${extension}`,
 				],
 				headless: false,
 			}),
