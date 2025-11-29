@@ -92,9 +92,10 @@ export default <Platform> {
 		const fileChooser = page.waitForEvent("filechooser");
 
 		await editButton.click();
+		await page.locator("div.update-profile-picture-modal").waitFor();
 
 		const uploadButton = page.locator('button[data-a-target="upload-photo-input"]');
-		await page.locator("div.update-profile-picture-modal").waitFor();
+		await page.waitForTimeout(500);
 		await uploadButton.click();
 
 		await (await fileChooser).setFiles(img);
