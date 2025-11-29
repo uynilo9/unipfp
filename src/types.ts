@@ -7,7 +7,7 @@ export type Result<T = null, E = Error> =
 export const Ok = <T>(value: T): Result<T, never> => ({ type: "ok", value });
 export const Err = <E>(error: E): Result<never, E> => ({ type: "err", error });
 
-export interface Platform {
+export interface PlatformViaBrowser {
 	name: string;
 	homeUrl: string;
 	loginUrl: string;

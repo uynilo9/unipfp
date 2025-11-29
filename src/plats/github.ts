@@ -1,12 +1,12 @@
 import "@std/dotenv/load";
 
 import { Err, Ok } from "../types.ts";
-import type { Page, Platform, Result } from "../types.ts";
+import type { Page, PlatformViaBrowser, Result } from "../types.ts";
 
 import { typeLikeAHuman } from "../utils/browser.ts";
 import { generateTotp } from "../utils/totp.ts";
 
-export default <Platform> {
+export default <PlatformViaBrowser> {
 	name: "GitHub",
 	homeUrl: "https://github.com/",
 	loginUrl: "https://github.com/login",

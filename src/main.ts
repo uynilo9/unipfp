@@ -1,7 +1,7 @@
 import * as fs from "@std/fs";
 
 import { Err, Ok } from "./types.ts";
-import type { Browser, BrowserContext, Platform, Result } from "./types.ts";
+import type { Browser, BrowserContext, PlatformViaBrowser, Result } from "./types.ts";
 
 import { createBrowser } from "./utils/browser.ts";
 import GitHub from "./plats/github.ts";
@@ -9,7 +9,7 @@ import Twitch from "./plats/twitch.ts";
 
 const img = "";
 
-async function updatePfpViaBrowser(browser: Browser, platform: Platform): Promise<Result> {
+async function updatePfpViaBrowser(browser: Browser, platform: PlatformViaBrowser): Promise<Result> {
 	let context: BrowserContext;
 
 	if (await fs.exists(platform.cookiesPath)) {
