@@ -1,6 +1,7 @@
 import * as fs from "@std/fs";
 
-import type { Browser, BrowserContext, Platform } from "./types.ts";
+import { Err, Ok } from "./types.ts";
+import type { Browser, BrowserContext, Platform, Result } from "./types.ts";
 
 import { createBrowser } from "./utils/browser.ts";
 import GitHub from "./plats/github.ts";
@@ -8,7 +9,7 @@ import Twitch from "./plats/twitch.ts";
 
 const img = "";
 
-async function updatePfp(browser: Browser, platform: Platform) {
+async function updatePfp(browser: Browser, platform: Platform): Promise<Result> {
 	let context: BrowserContext;
 
 	if (await fs.exists(platform.cookiesPath)) {
@@ -19,33 +20,49 @@ async function updatePfp(browser: Browser, platform: Platform) {
 
 	const page = await context.newPage();
 
-	const loggedIn = await platform.checkStatus(page);
-	if (!loggedIn) {
-		await platform.performLogin(page);
-		await platform.performVerify(page);
-
-		await page.waitForURL((url) => url.href === platform.homeUrl);
-		await context.storageState({ path: platform.cookiesPath });
+	const accountLoggedIn = await platform.checkStatus(page);
+	if (accountLoggedIn.type === "err") {
+		return Err(accountLoggedIn.error);
 	}
 
-	await platform.performUpdate(page, img);
+	if (accountLoggedIn.type === "ok" && !accountLoggedIn.value) {
+		const logginIn = await platform.performLogin(page);
+		if (logginIn.type === "err") {
+			return Err(logginIn.error);
+		}
+	}
+
+	await context.storageState({ path: platform.cookiesPath });
+
+	const updated = await platform.performUpdate(page, img);
+	if (updated.type === "err") {
+		return Err(updated.error);
+	}
 
 	await page.close();
 	await context.close();
+	return Ok(null);
 }
 
 async function main() {
 	await fs.ensureDir("cookies");
 
 	const browser = await createBrowser();
-	try {
-		await updatePfp(browser, GitHub);
-		await updatePfp(browser, Twitch);
-	} catch (err) {
-		throw err;
-	} finally {
-		await browser.close();
+	if (browser.type === "err") {
+		throw browser.error;
 	}
+
+	const github = await updatePfp(browser.value, GitHub);
+	if (github.type === "err") {
+		throw github.error;
+	}
+
+	const twitch = await updatePfp(browser.value, Twitch);
+	if (twitch.type === "err") {
+		throw twitch.error;
+	}
+
+	await browser.value.close();
 }
 
 await main();

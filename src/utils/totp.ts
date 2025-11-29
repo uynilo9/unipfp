@@ -1,6 +1,9 @@
 import * as otpauth from "@hectorm/otpauth";
 
-export function generateTotp(secret: string): string {
+import { Err, Ok } from "../types.ts";
+import type { Result } from "../types.ts";
+
+export function generateTotp(secret: string): Result<string> {
 	const totp = new otpauth.TOTP({
 		algorithm: "SHA1",
 		digits: 6,
@@ -8,5 +11,9 @@ export function generateTotp(secret: string): string {
 		secret: otpauth.Secret.fromBase32(secret.trim()),
 	});
 
-	return totp.generate();
+	try {
+		return Ok(totp.generate());
+	} catch (err) {
+		throw Err(err);
+	}
 }

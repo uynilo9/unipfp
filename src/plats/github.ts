@@ -1,6 +1,7 @@
 import "@std/dotenv/load";
 
-import type { Page, Platform } from "../types.ts";
+import { Err, Ok } from "../types.ts";
+import type { Page, Platform, Result } from "../types.ts";
 
 import { typeLikeAHuman } from "../utils/browser.ts";
 import { generateTotp } from "../utils/totp.ts";
@@ -18,14 +19,15 @@ export default <Platform> {
 		secret: Deno.env.get("GITHUB_SECRET"),
 	},
 
-	async checkStatus(page: Page) {
-		await page.goto(this.loginUrl);
+	async checkStatus(page: Page): Promise<Result<boolean>> {
+		await page.goto(this.settingsUrl);
+		await page.locator("body.logged-out, body.logged-in").waitFor();
 
-		return await page.locator("body.logged-out").isHidden();
+		return Ok(await page.locator("body.logged-in").isVisible());
 	},
 
-	async performLogin(page: Page) {
-		await page.goto(this.loginUrl);
+	async performLogin(page: Page): Promise<Result> {
+		// await page.goto(this.loginUrl);
 
 		const username = this.credentials.username;
 		const password = this.credentials.password;
@@ -34,24 +36,48 @@ export default <Platform> {
 			await typeLikeAHuman(page, "#password", password);
 
 			await page.click('input[type="submit"]');
+			await page.locator("#js-flash-container div.flash-error, body.logged-in, #app_totp").waitFor();
+
+			if (await page.locator("#js-flash-container div.flash-error").isVisible()) {
+				return Err(new Error("Wrong GitHub username or password. Please check out your environment file."));
+			} else if (await page.locator("body.logged-in").isVisible()) {
+				return Ok(null);
+			} else if (await page.locator("#app_totp").isVisible()) {
+				return await this.performVerify(page);
+			}
+
+			return Err(new Error("Unexpected error occurred."));
 		}
+
+		return Err(new Error("Could not find the GitHub username or password. Please check out your environment file."));
 	},
 
-	async performVerify(page: Page) {
+	async performVerify(page: Page): Promise<Result> {
 		if (!await page.locator("#app_totp").isVisible()) {
-			return;
+			return Err(new Error("Expected to find the TOTP input, but it was not found."));
 		}
 
 		const secret = this.credentials.secret;
 		if (secret) {
 			const token = generateTotp(secret);
-			await typeLikeAHuman(page, "#app_totp", token);
+			if (token.type === "err") {
+				return Err(token.error);
+			}
+			await typeLikeAHuman(page, "#app_totp", token.value);
 
-			await page.waitForTimeout(2000);
+			if (await page.locator("#js-flash-container div.flash-error").isVisible()) {
+				return Err(new Error("Wrong GitHub TOTP. Please check out your GitHub 2FA secret in your environment file."));
+			} else if (await page.locator("body.logged-in").isVisible()) {
+				return Ok(null);
+			}
+
+			return Err(new Error("Unexpected error occurred."));
 		}
+
+		return Err(new Error("Could not find the GitHub 2FA secret. Please check out your environment file."));
 	},
 
-	async performUpdate(page: Page, img: string) {
+	async performUpdate(page: Page, img: string): Promise<Result> {
 		await page.goto(this.settingsUrl);
 
 		const imgInput = page.locator('input[type="file"]#avatar_upload');
@@ -61,6 +87,12 @@ export default <Platform> {
 		await setButton.waitFor();
 		await setButton.click();
 
-		await page.waitForTimeout(3000);
+		try {
+			await page.locator("#js-flash-container div.flash-notice").waitFor();
+
+			return Ok(null);
+		} catch {
+			return Err(new Error("Unexpected error occurred."));
+		}
 	},
 };
