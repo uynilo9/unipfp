@@ -1,6 +1,6 @@
 # Unipfp
 
-> ![WARNING]
+> [!WARNING]
 > This script is still under development and only for personal use.
 
 ## ✨ Overview
