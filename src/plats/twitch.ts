@@ -83,7 +83,7 @@ export default <PlatformViaBrowser> {
 		return Err(new Error("Could not find the Twitch 2FA secret. Please check out in your environment file."));
 	},
 
-	async performUpdate(page: Page, img: string): Promise<Result> {
+	async performUpdate(page: Page, image: string): Promise<Result> {
 		await page.goto(this.settingsUrl);
 
 		const editButton = page.locator('button[data-a-target="profile-image-upload-button"]');
@@ -98,7 +98,7 @@ export default <PlatformViaBrowser> {
 		await page.waitForTimeout(500);
 		await uploadButton.click();
 
-		await (await fileChooser).setFiles(img);
+		await (await fileChooser).setFiles(image);
 		await page.locator("canvas").waitFor();
 
 		const setButton = page.locator('div.profile-edit div[data-a-target="tw-core-button-label-text"]').last();

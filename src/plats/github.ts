@@ -77,11 +77,11 @@ export default <PlatformViaBrowser> {
 		return Err(new Error("Could not find the GitHub 2FA secret. Please check out your environment file."));
 	},
 
-	async performUpdate(page: Page, img: string): Promise<Result> {
+	async performUpdate(page: Page, image: string): Promise<Result> {
 		await page.goto(this.settingsUrl);
 
-		const imgInput = page.locator('input[type="file"]#avatar_upload');
-		await imgInput.setInputFiles(img);
+		const imageInput = page.locator('input[type="file"]#avatar_upload');
+		await imageInput.setInputFiles(image);
 
 		const setButton = page.locator('#avatar-crop-form button[type="submit"]');
 		await setButton.waitFor();

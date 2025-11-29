@@ -23,7 +23,7 @@ export interface PlatformViaBrowser {
 	checkStatus(page: Page): Promise<Result<boolean>>;
 	performLogin(page: Page): Promise<Result>;
 	performVerify(page: Page): Promise<Result>;
-	performUpdate(page: Page, img: string): Promise<Result>;
+	performUpdate(page: Page, image: string): Promise<Result>;
 }
 
 export type { Browser, BrowserContext, Page } from "playwright";
