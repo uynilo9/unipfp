@@ -26,9 +26,9 @@ async function updatePfpViaBrowser(browser: Browser, platform: PlatformViaBrowse
 	}
 
 	if (accountLoggedIn.type === "ok" && !accountLoggedIn.value) {
-		const logginIn = await platform.performLogin(page);
-		if (logginIn.type === "err") {
-			return Err(logginIn.error);
+		const loggingIn = await platform.performLogin(page);
+		if (loggingIn.type === "err") {
+			return Err(loggingIn.error);
 		}
 	}
 
