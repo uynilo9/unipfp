@@ -34,9 +34,9 @@ async function updatePfpViaBrowser(browser: Browser, platform: PlatformViaBrowse
 
 	await context.storageState({ path: platform.cookiesPath });
 
-	const updated = await platform.performUpdate(page, img);
-	if (updated.type === "err") {
-		return Err(updated.error);
+	const pfpUpdated = await platform.performUpdate(page, img);
+	if (pfpUpdated.type === "err") {
+		return Err(pfpUpdated.error);
 	}
 
 	await page.close();
