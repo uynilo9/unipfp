@@ -4,6 +4,7 @@ import { Err, Ok } from "./types.ts";
 import type { Browser, BrowserContext, PlatformViaBrowser, Result } from "./types.ts";
 
 import { createBrowser } from "./utils/browser.ts";
+import Discord from "./plats/discord.ts";
 import GitHub from "./plats/github.ts";
 import Twitch from "./plats/twitch.ts";
 
@@ -50,6 +51,11 @@ async function main() {
 	const browser = await createBrowser();
 	if (browser.isErr()) {
 		throw browser.error;
+	}
+
+	const discord = await updatePfpViaBrowser(browser.value, Discord);
+	if (discord.isErr()) {
+		throw discord.error;
 	}
 
 	const github = await updatePfpViaBrowser(browser.value, GitHub);
