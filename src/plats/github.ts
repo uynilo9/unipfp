@@ -65,6 +65,8 @@ export default <PlatformViaBrowser> {
 			}
 			await typeLikeAHuman(page, "#app_totp", token.value);
 
+			await page.locator("#js-flash-container div.flash-error, body.logged-in").waitFor();
+
 			if (await page.locator("#js-flash-container div.flash-error").isVisible()) {
 				return Err(new Error("Wrong GitHub TOTP. Please check out your GitHub 2FA secret in your environment file."));
 			} else if (await page.locator("body.logged-in").isVisible()) {
