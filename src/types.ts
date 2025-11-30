@@ -17,6 +17,7 @@ export interface PlatformViaBrowser {
 	cookiesPath: string;
 
 	credentials: {
+		email?: string;
 		username?: string;
 		password?: string;
 		secret?: string;
