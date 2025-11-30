@@ -31,16 +31,9 @@ const img = "path/to/your/pfp.jpg";
 
 ## 📜 Usage
 
-1. Comment unused platforms in the `main.ts` file:
-```ts
-// const github = await updatePfpViaBrowser(browser.value, GitHub);
-// if (github.type === "err") {
-// 	throw github.error;
-// }
-```
+0. Comment/uncomment the platforms you want in the `main.ts` file.
 
-2. Run the script:
-
+1. Run the script:
 ```sh
 deno run start
 ```
