@@ -61,7 +61,7 @@ export default <PlatformViaBrowser> {
 		const secret = this.credentials.secret;
 		if (secret) {
 			const token = generateTotp(secret);
-			if (token.type === "err") {
+			if (token.isErr()) {
 				return Err(token.error);
 			}
 			await typeLikeAHuman(page, "#authenticator-token-input", token.value);

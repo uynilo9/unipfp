@@ -21,13 +21,13 @@ async function updatePfpViaBrowser(browser: Browser, platform: PlatformViaBrowse
 	const page = await context.newPage();
 
 	const accountLoggedIn = await platform.checkStatus(page);
-	if (accountLoggedIn.type === "err") {
+	if (accountLoggedIn.isErr()) {
 		return Err(accountLoggedIn.error);
 	}
 
-	if (accountLoggedIn.type === "ok" && !accountLoggedIn.value) {
+	if (accountLoggedIn.isOk() && !accountLoggedIn.value) {
 		const loggingIn = await platform.performLogin(page);
-		if (loggingIn.type === "err") {
+		if (loggingIn.isErr()) {
 			return Err(loggingIn.error);
 		}
 	}
@@ -35,7 +35,7 @@ async function updatePfpViaBrowser(browser: Browser, platform: PlatformViaBrowse
 	await context.storageState({ path: platform.cookiesPath });
 
 	const pfpUpdated = await platform.performUpdate(page, img);
-	if (pfpUpdated.type === "err") {
+	if (pfpUpdated.isErr()) {
 		return Err(pfpUpdated.error);
 	}
 
@@ -48,17 +48,17 @@ async function main() {
 	await fs.ensureDir("cookies");
 
 	const browser = await createBrowser();
-	if (browser.type === "err") {
+	if (browser.isErr()) {
 		throw browser.error;
 	}
 
 	const github = await updatePfpViaBrowser(browser.value, GitHub);
-	if (github.type === "err") {
+	if (github.isErr()) {
 		throw github.error;
 	}
 
 	const twitch = await updatePfpViaBrowser(browser.value, Twitch);
-	if (twitch.type === "err") {
+	if (twitch.isErr()) {
 		throw twitch.error;
 	}
 
