@@ -107,10 +107,10 @@ export default <PlatformViaBrowser> {
 	async performUpdate(page: Page, image: string): Promise<Result> {
 		// await page.goto(this.settingsUrl);
 
-        const warningIgnoreButton = page.locator("button[data-dismiss=modal]").first();
-        if (await warningIgnoreButton.isVisible()) {
-            await warningIgnoreButton.click();
-        }
+		const warningIgnoreButton = page.locator("button[data-dismiss=modal]").first();
+		if (await warningIgnoreButton.isVisible()) {
+			await warningIgnoreButton.click();
+		}
 
 		await page.click("button[data-testid=navbarAccountMenuTrigger]");
 

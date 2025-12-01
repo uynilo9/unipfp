@@ -82,7 +82,7 @@ export default <PlatformViaBrowser> {
 	async performUpdate(page: Page, image: string): Promise<Result> {
 		await page.goto(this.settingsUrl);
 
-		const imageInput = page.locator("input[type=file]#avatar_upload");
+		const imageInput = page.locator("#avatar_upload");
 		await imageInput.setInputFiles(image);
 
 		const setButton = page.locator("#avatar-crop-form button[type=submit]");
