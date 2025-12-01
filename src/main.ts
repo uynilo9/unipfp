@@ -6,6 +6,7 @@ import type { Browser, BrowserContext, PlatformViaBrowser, Result } from "./type
 import { createBrowser } from "./utils/browser.ts";
 import Discord from "./plats/discord.ts";
 import GitHub from "./plats/github.ts";
+import Plex from "./plats/plex.ts";
 import Twitch from "./plats/twitch.ts";
 import TwitterX from "./plats/twitterx.ts";
 
@@ -62,6 +63,11 @@ async function main() {
 	const github = await updatePfpViaBrowser(browser.value, GitHub);
 	if (github.isErr()) {
 		throw github.error;
+	}
+
+	const plex = await updatePfpViaBrowser(browser.value, Plex);
+	if (plex.isErr()) {
+		throw plex.error;
 	}
 
 	const twitch = await updatePfpViaBrowser(browser.value, Twitch);
