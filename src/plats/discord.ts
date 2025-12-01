@@ -50,7 +50,7 @@ export default <PlatformViaBrowser> {
 					return Err(new Error("Wrong Discord email or password. Please check out your environment file."));
 				}
 				default: {
-					return Err(new Error("Unexpected error occurred."));
+					return Err(new Error("Unexpected error occurred while trying to log into Discord."));
 				}
 			}
 		} else if (await page.locator("nav[class*=guilds]").isVisible()) {
@@ -59,12 +59,12 @@ export default <PlatformViaBrowser> {
 			return await this.performVerify(page);
 		}
 
-		return Err(new Error("Unexpected error occurred."));
+		return Err(new Error("Unexpected error occurred while trying to log into Discord."));
 	},
 
 	async performVerify(page: Page): Promise<Result> {
 		if (!await page.locator("input[autocomplete=one-time-code]").isVisible()) {
-			return Err(new Error("Expected to find the TOTP input, but it was not found."));
+			return Err(new Error("Expected to find the TOTP input, but it was not found while trying to verify in Discord."));
 		}
 
 		const secret = this.credentials.secret;
@@ -87,7 +87,7 @@ export default <PlatformViaBrowser> {
 			return Ok();
 		}
 
-		return Err(new Error("Unexpected error occurred."));
+		return Err(new Error("Unexpected error occurred while trying to verify in Discord."));
 	},
 
 	async performUpdate(page: Page, image: string): Promise<Result> {
@@ -122,7 +122,7 @@ export default <PlatformViaBrowser> {
 
 			return Ok();
 		} catch {
-			return Err(new Error("Unexpected error occurred."));
+			return Err(new Error("Unexpected error occurred while trying to update your pfp in Discord."));
 		}
 	},
 };

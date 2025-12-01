@@ -50,12 +50,12 @@ export default <PlatformViaBrowser> {
 			return await this.performVerify(page);
 		}
 
-		return Err(new Error("Unexpected error occurred."));
+		return Err(new Error("Unexpected error occurred while trying to log into Twitch."));
 	},
 
 	async performVerify(page: Page): Promise<Result> {
 		if (!await page.locator("#authenticator-token-input").isVisible()) {
-			return Err(new Error("Expected to find the TOTP input, but it was not found."));
+			return Err(new Error("Expected to find the TOTP input, but it was not found while trying to verify in Twitch."));
 		}
 
 		const secret = this.credentials.secret;
@@ -80,7 +80,7 @@ export default <PlatformViaBrowser> {
 			return Ok();
 		}
 
-		return Err(new Error("Unexpected error occurred."));
+		return Err(new Error("Unexpected error occurred while trying to verify in Twitch."));
 	},
 
 	async performUpdate(page: Page, image: string): Promise<Result> {
@@ -110,7 +110,7 @@ export default <PlatformViaBrowser> {
 
 			return Ok();
 		} catch {
-			return Err(new Error("Unexpected error occurred."));
+			return Err(new Error("Unexpected error occurred while trying to update your pfp in Twitch."));
 		}
 	},
 };
