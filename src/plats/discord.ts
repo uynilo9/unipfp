@@ -102,14 +102,14 @@ export default <PlatformViaBrowser> {
 
 		await changeButton.click();
 
-		const uploadButton = page.locator('input.file-input');
+		const uploadButton = page.locator("input.file-input");
 		await uploadButton.waitFor();
 		await uploadButton.click();
 
 		await (await fileChooser).setFiles(image);
 		await page.locator("img[alt=avatar]").waitFor();
 
-		const applyButton = page.locator('footer button').last();
+		const applyButton = page.locator("footer button").last();
 		await applyButton.waitFor();
 		await applyButton.click();
 
