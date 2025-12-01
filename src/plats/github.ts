@@ -31,25 +31,25 @@ export default <PlatformViaBrowser> {
 
 		const username = this.credentials.username;
 		const password = this.credentials.password;
-		if (username && password) {
-			await typeLikeAHuman(page, "#login_field", username);
-			await typeLikeAHuman(page, "#password", password);
-
-			await page.click('input[type="submit"]');
-			await page.locator("#js-flash-container div.flash-error, body.logged-in, #app_totp").waitFor();
-
-			if (await page.locator("#js-flash-container div.flash-error").isVisible()) {
-				return Err(new Error("Wrong GitHub username or password. Please check out your environment file."));
-			} else if (await page.locator("body.logged-in").isVisible()) {
-				return Ok();
-			} else if (await page.locator("#app_totp").isVisible()) {
-				return await this.performVerify(page);
-			}
-
-			return Err(new Error("Unexpected error occurred."));
+		if (!username || !password) {
+			return Err(new Error("Could not find the GitHub username or password. Please check out your environment file."));
 		}
 
-		return Err(new Error("Could not find the GitHub username or password. Please check out your environment file."));
+		await typeLikeAHuman(page, "#login_field", username);
+		await typeLikeAHuman(page, "#password", password);
+
+		await page.click('input[type="submit"]');
+		await page.locator("#js-flash-container div.flash-error, body.logged-in, #app_totp").waitFor();
+
+		if (await page.locator("#js-flash-container div.flash-error").isVisible()) {
+			return Err(new Error("Wrong GitHub username or password. Please check out your environment file."));
+		} else if (await page.locator("body.logged-in").isVisible()) {
+			return Ok();
+		} else if (await page.locator("#app_totp").isVisible()) {
+			return await this.performVerify(page);
+		}
+
+		return Err(new Error("Unexpected error occurred."));
 	},
 
 	async performVerify(page: Page): Promise<Result> {
@@ -58,25 +58,25 @@ export default <PlatformViaBrowser> {
 		}
 
 		const secret = this.credentials.secret;
-		if (secret) {
-			const token = generateTotp(secret);
-			if (token.isErr()) {
-				return Err(token.error);
-			}
-			await typeLikeAHuman(page, "#app_totp", token.value);
-
-			await page.locator("#js-flash-container div.flash-error, body.logged-in").waitFor();
-
-			if (await page.locator("#js-flash-container div.flash-error").isVisible()) {
-				return Err(new Error("Wrong GitHub TOTP. Please check out your GitHub 2FA secret in your environment file."));
-			} else if (await page.locator("body.logged-in").isVisible()) {
-				return Ok();
-			}
-
-			return Err(new Error("Unexpected error occurred."));
+		if (!secret) {
+			return Err(new Error("Could not find the GitHub 2FA secret. Please check out your environment file."));
 		}
 
-		return Err(new Error("Could not find the GitHub 2FA secret. Please check out your environment file."));
+		const token = generateTotp(secret);
+		if (token.isErr()) {
+			return Err(token.error);
+		}
+		await typeLikeAHuman(page, "#app_totp", token.value);
+
+		await page.locator("#js-flash-container div.flash-error, body.logged-in").waitFor();
+
+		if (await page.locator("#js-flash-container div.flash-error").isVisible()) {
+			return Err(new Error("Wrong GitHub TOTP. Please check out your GitHub 2FA secret in your environment file."));
+		} else if (await page.locator("body.logged-in").isVisible()) {
+			return Ok();
+		}
+
+		return Err(new Error("Unexpected error occurred."));
 	},
 
 	async performUpdate(page: Page, image: string): Promise<Result> {

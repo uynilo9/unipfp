@@ -31,35 +31,35 @@ export default <PlatformViaBrowser> {
 
 		const email = this.credentials.email;
 		const password = this.credentials.password;
-		if (email && password) {
-			await typeLikeAHuman(page, 'input[name="email"]', email);
-			await typeLikeAHuman(page, 'input[name="password"]', password);
-
-			await page.click('button[type="submit"]');
-			await page.locator('form div[data-layout="vertical"] svg, section[aria-label="User area"], input[autocomplete="one-time-code"]').first().waitFor();
-
-			if (await page.locator(`form div[data-layout="vertical"] svg`).first().isVisible()) {
-				switch (await page.locator(`form div[data-layout="vertical"] svg`).count()) {
-					case 1: {
-						return Err(new Error("New Discord account login location detected. Please check out your email inbox."));
-					}
-					case 2: {
-						return Err(new Error("Wrong Discord email or password. Please check out your environment file."));
-					}
-					default: {
-						return Err(new Error("Unexpected error occurred."));
-					}
-				}
-			} else if (await page.locator('section[aria-label="User area"]').isVisible()) {
-				return Ok();
-			} else if (await page.locator('input[autocomplete="one-time-code"]').isVisible()) {
-				return await this.performVerify(page);
-			}
-
-			return Err(new Error("Unexpected error occurred."));
+		if (!email || !password) {
+			return Err(new Error("Could not find the Discord email or password. Please check out your environment file."));
 		}
 
-		return Err(new Error("Could not find the Discord email or password. Please check out your environment file."));
+		await typeLikeAHuman(page, 'input[name="email"]', email);
+		await typeLikeAHuman(page, 'input[name="password"]', password);
+
+		await page.click('button[type="submit"]');
+		await page.locator('form div[data-layout="vertical"] svg, section[aria-label="User area"], input[autocomplete="one-time-code"]').first().waitFor();
+
+		if (await page.locator(`form div[data-layout="vertical"] svg`).first().isVisible()) {
+			switch (await page.locator(`form div[data-layout="vertical"] svg`).count()) {
+				case 1: {
+					return Err(new Error("New Discord account login location detected. Please check out your email inbox."));
+				}
+				case 2: {
+					return Err(new Error("Wrong Discord email or password. Please check out your environment file."));
+				}
+				default: {
+					return Err(new Error("Unexpected error occurred."));
+				}
+			}
+		} else if (await page.locator('section[aria-label="User area"]').isVisible()) {
+			return Ok();
+		} else if (await page.locator('input[autocomplete="one-time-code"]').isVisible()) {
+			return await this.performVerify(page);
+		}
+
+		return Err(new Error("Unexpected error occurred."));
 	},
 
 	async performVerify(page: Page): Promise<Result> {
@@ -68,26 +68,26 @@ export default <PlatformViaBrowser> {
 		}
 
 		const secret = this.credentials.secret;
-		if (secret) {
-			const token = generateTotp(secret);
-			if (token.isErr()) {
-				return Err(token.error);
-			}
-			await typeLikeAHuman(page, 'input[autocomplete="one-time-code"]', token.value);
-
-			await page.click('button[type="submit"]');
-			await page.locator('div[data-layout="vertical"]+div[style="color: var(--text-danger);"], section[aria-label="User area"]').waitFor();
-
-			if (await page.locator('div[data-layout="vertical"]+div[style="color: var(--text-danger);"]').isVisible()) {
-				return Err(new Error("Wrong Discord TOTP. Please check out your Discord 2FA secret in your environment file."));
-			} else if (await page.locator('section[aria-label="User area"]').isVisible()) {
-				return Ok();
-			}
-
-			return Err(new Error("Unexpected error occurred."));
+		if (!secret) {
+			return Err(new Error("Could not find the Discord 2FA secret. Please check out your environment file."));
 		}
 
-		return Err(new Error("Could not find the Discord 2FA secret. Please check out your environment file."));
+		const token = generateTotp(secret);
+		if (token.isErr()) {
+			return Err(token.error);
+		}
+		await typeLikeAHuman(page, 'input[autocomplete="one-time-code"]', token.value);
+
+		await page.click('button[type="submit"]');
+		await page.locator('div[data-layout="vertical"]+div[style="color: var(--text-danger);"], section[aria-label="User area"]').waitFor();
+
+		if (await page.locator('div[data-layout="vertical"]+div[style="color: var(--text-danger);"]').isVisible()) {
+			return Err(new Error("Wrong Discord TOTP. Please check out your Discord 2FA secret in your environment file."));
+		} else if (await page.locator('section[aria-label="User area"]').isVisible()) {
+			return Ok();
+		}
+
+		return Err(new Error("Unexpected error occurred."));
 	},
 
 	async performUpdate(page: Page, image: string): Promise<Result> {

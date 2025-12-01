@@ -31,26 +31,26 @@ export default <PlatformViaBrowser> {
 
 		const username = this.credentials.username;
 		const password = this.credentials.password;
-		if (username && password) {
-			await page.locator("#login-username").waitFor();
-			await typeLikeAHuman(page, "#login-username", username);
-			await typeLikeAHuman(page, "#password-input", password);
-
-			await page.click('button[data-a-target="passport-login-button"]');
-			await page.locator('div[data-a-target="passport-modal"] div[role="alert"], div[data-a-target="profile-image"], #authenticator-token-input').waitFor();
-
-			if (await page.locator('div[data-a-target="passport-modal"] div[role="alert"]').isVisible()) {
-				return Err(new Error("Wrong Twitch username or password. Please check out your environment file."));
-			} else if (await page.locator('div[data-a-target="profile-image"]').isVisible()) {
-				return Ok();
-			} else if (await page.locator("#authenticator-token-input").isVisible()) {
-				return await this.performVerify(page);
-			}
-
-			return Err(new Error("Unexpected error occurred."));
+		if (!username || !password) {
+			return Err(new Error("Could not find the Twitch username or password. Please check out your environment file."));
 		}
 
-		return Err(new Error("Could not find the Twitch username or password. Please check out your environment file."));
+		await page.locator("#login-username").waitFor();
+		await typeLikeAHuman(page, "#login-username", username);
+		await typeLikeAHuman(page, "#password-input", password);
+
+		await page.click('button[data-a-target="passport-login-button"]');
+		await page.locator('div[data-a-target="passport-modal"] div[role="alert"], div[data-a-target="profile-image"], #authenticator-token-input').waitFor();
+
+		if (await page.locator('div[data-a-target="passport-modal"] div[role="alert"]').isVisible()) {
+			return Err(new Error("Wrong Twitch username or password. Please check out your environment file."));
+		} else if (await page.locator('div[data-a-target="profile-image"]').isVisible()) {
+			return Ok();
+		} else if (await page.locator("#authenticator-token-input").isVisible()) {
+			return await this.performVerify(page);
+		}
+
+		return Err(new Error("Unexpected error occurred."));
 	},
 
 	async performVerify(page: Page): Promise<Result> {
@@ -59,28 +59,28 @@ export default <PlatformViaBrowser> {
 		}
 
 		const secret = this.credentials.secret;
-		if (secret) {
-			const token = generateTotp(secret);
-			if (token.isErr()) {
-				return Err(token.error);
-			}
-			await typeLikeAHuman(page, "#authenticator-token-input", token.value);
-
-			await page.click('input[name="rememberMe"]+label');
-			await page.waitForTimeout(500);
-			await page.click('button[type="submit"]');
-			await page.locator('div[data-a-target="passport-modal"] div[role="alert"], div[data-a-target="profile-image"]').waitFor();
-
-			if (await page.locator('div[data-a-target="passport-modal"] div[role="alert"]').isVisible()) {
-				return Err(new Error("Wrong Twitch TOTP. Please check out your Twitch 2FA secret in your environment file."));
-			} else if (await page.locator('div[data-a-target="profile-image"]').isVisible()) {
-				return Ok();
-			}
-
-			return Err(new Error("Unexpected error occurred."));
+		if (!secret) {
+			return Err(new Error("Could not find the Twitch 2FA secret. Please check out in your environment file."));
 		}
 
-		return Err(new Error("Could not find the Twitch 2FA secret. Please check out in your environment file."));
+		const token = generateTotp(secret);
+		if (token.isErr()) {
+			return Err(token.error);
+		}
+		await typeLikeAHuman(page, "#authenticator-token-input", token.value);
+
+		await page.click('input[name="rememberMe"]+label');
+		await page.waitForTimeout(500);
+		await page.click('button[type="submit"]');
+		await page.locator('div[data-a-target="passport-modal"] div[role="alert"], div[data-a-target="profile-image"]').waitFor();
+
+		if (await page.locator('div[data-a-target="passport-modal"] div[role="alert"]').isVisible()) {
+			return Err(new Error("Wrong Twitch TOTP. Please check out your Twitch 2FA secret in your environment file."));
+		} else if (await page.locator('div[data-a-target="profile-image"]').isVisible()) {
+			return Ok();
+		}
+
+		return Err(new Error("Unexpected error occurred."));
 	},
 
 	async performUpdate(page: Page, image: string): Promise<Result> {
