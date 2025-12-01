@@ -21,9 +21,9 @@ export default <PlatformViaBrowser> {
 
 	async checkStatus(page: Page): Promise<Result<boolean>> {
 		await page.goto(this.loginUrl);
-		await page.locator('input[name="email"], nav[class*="guilds"]').waitFor();
+		await page.locator("input[name=email], nav[class*=guilds]").waitFor();
 
-		return Ok(await page.locator('nav[class*="guilds"]').isVisible());
+		return Ok(await page.locator("nav[class*=guilds]").isVisible());
 	},
 
 	async performLogin(page: Page): Promise<Result> {
@@ -35,14 +35,14 @@ export default <PlatformViaBrowser> {
 			return Err(new Error("Could not find the Discord email or password. Please check out your environment file."));
 		}
 
-		await typeLikeAHuman(page, 'input[name="email"]', email);
-		await typeLikeAHuman(page, 'input[name="password"]', password);
+		await typeLikeAHuman(page, "input[name=email]", email);
+		await typeLikeAHuman(page, "input[name=password]", password);
 
-		await page.click('button[type="submit"]');
-		await page.locator('div[class*="helperTextContainer"], nav[class*="guilds"], input[autocomplete="one-time-code"]').first().waitFor();
+		await page.click("button[type=submit]");
+		await page.locator("div[class*=helperTextContainer], nav[class*=guilds], input[autocomplete=one-time-code]").first().waitFor();
 
-		if (await page.locator('div[class*="helperTextContainer"]').first().isVisible()) {
-			switch (await page.locator('div[class*="helperTextContainer"]').count()) {
+		if (await page.locator("div[class*=helperTextContainer]").first().isVisible()) {
+			switch (await page.locator("div[class*=helperTextContainer]").count()) {
 				case 1: {
 					return Err(new Error("New Discord account login location detected. Please check out your email inbox."));
 				}
@@ -53,9 +53,9 @@ export default <PlatformViaBrowser> {
 					return Err(new Error("Unexpected error occurred."));
 				}
 			}
-		} else if (await page.locator('nav[class*="guilds"]').isVisible()) {
+		} else if (await page.locator("nav[class*=guilds]").isVisible()) {
 			return Ok();
-		} else if (await page.locator('input[autocomplete="one-time-code"]').isVisible()) {
+		} else if (await page.locator("input[autocomplete=one-time-code]").isVisible()) {
 			return await this.performVerify(page);
 		}
 
@@ -63,7 +63,7 @@ export default <PlatformViaBrowser> {
 	},
 
 	async performVerify(page: Page): Promise<Result> {
-		if (!await page.locator('input[autocomplete="one-time-code"]').isVisible()) {
+		if (!await page.locator("input[autocomplete=one-time-code]").isVisible()) {
 			return Err(new Error("Expected to find the TOTP input, but it was not found."));
 		}
 
@@ -76,14 +76,14 @@ export default <PlatformViaBrowser> {
 		if (token.isErr()) {
 			return Err(token.error);
 		}
-		await typeLikeAHuman(page, 'input[autocomplete="one-time-code"]', token.value);
+		await typeLikeAHuman(page, "input[autocomplete=one-time-code]", token.value);
 
-		await page.click('button[type="submit"]');
-		await page.locator('div[class*="error"], nav[class*="guilds"]').waitFor();
+		await page.click("button[type=submit]");
+		await page.locator("div[class*=error], nav[class*=guilds]").waitFor();
 
-		if (await page.locator('div[class*="error"]').isVisible()) {
+		if (await page.locator("div[class*=error]").isVisible()) {
 			return Err(new Error("Wrong Discord TOTP. Please check out your Discord 2FA secret in your environment file."));
-		} else if (await page.locator('nav[class*="guilds"]').isVisible()) {
+		} else if (await page.locator("nav[class*=guilds]").isVisible()) {
 			return Ok();
 		}
 
@@ -92,10 +92,10 @@ export default <PlatformViaBrowser> {
 
 	async performUpdate(page: Page, image: string): Promise<Result> {
 		await page.locator("section button").last().click();
-		await page.locator('div[role="dialog"] div[role="tablist"]').waitFor();
-		await page.locator('div[role="dialog"] div[role="tablist"]+div button').first().click();
+		await page.locator("div[role=dialog] div[role=tablist]").waitFor();
+		await page.locator("div[role=dialog] div[role=tablist]+div button").first().click();
 
-		const changeButton = page.locator('div[role="dialog"] h1+div button').first();
+		const changeButton = page.locator("div[role=dialog] h1+div button").first();
 		await changeButton.waitFor();
 
 		const fileChooser = page.waitForEvent("filechooser");
@@ -113,7 +113,7 @@ export default <PlatformViaBrowser> {
 		await applyButton.waitFor();
 		await applyButton.click();
 
-		const saveButton = page.locator('div[class*="notice"] button').last();
+		const saveButton = page.locator("div[class*=notice] button").last();
 		await saveButton.waitFor();
 		await saveButton.click();
 

@@ -21,7 +21,7 @@ export default <PlatformViaBrowser> {
 
 	async checkStatus(page: Page): Promise<Result<boolean>> {
 		await page.goto(this.settingsUrl);
-		await page.locator('div[data-a-target="passport-modal"], body.logged-in').waitFor();
+		await page.locator("div[data-a-target=passport-modal], body.logged-in").waitFor();
 
 		return Ok(await page.locator("body.logged-in").isVisible());
 	},
@@ -39,12 +39,12 @@ export default <PlatformViaBrowser> {
 		await typeLikeAHuman(page, "#login-username", username);
 		await typeLikeAHuman(page, "#password-input", password);
 
-		await page.click('button[data-a-target="passport-login-button"]');
-		await page.locator('div[data-a-target="passport-modal"] div[role="alert"], div[data-a-target="profile-image"], #authenticator-token-input').waitFor();
+		await page.click("button[data-a-target=passport-login-button]");
+		await page.locator("div[data-a-target=passport-modal] div[role=alert], div[data-a-target=profile-image], #authenticator-token-input").waitFor();
 
-		if (await page.locator('div[data-a-target="passport-modal"] div[role="alert"]').isVisible()) {
+		if (await page.locator("div[data-a-target=passport-modal] div[role=alert]").isVisible()) {
 			return Err(new Error("Wrong Twitch username or password. Please check out your environment file."));
-		} else if (await page.locator('div[data-a-target="profile-image"]').isVisible()) {
+		} else if (await page.locator("div[data-a-target=profile-image]").isVisible()) {
 			return Ok();
 		} else if (await page.locator("#authenticator-token-input").isVisible()) {
 			return await this.performVerify(page);
@@ -69,14 +69,14 @@ export default <PlatformViaBrowser> {
 		}
 		await typeLikeAHuman(page, "#authenticator-token-input", token.value);
 
-		await page.click('input[name="rememberMe"]+label');
+		await page.click("input[name=rememberMe]+label");
 		await page.waitForTimeout(500);
-		await page.click('button[type="submit"]');
-		await page.locator('div[data-a-target="passport-modal"] div[role="alert"], div[data-a-target="profile-image"]').waitFor();
+		await page.click("button[type=submit]");
+		await page.locator("div[data-a-target=passport-modal] div[role=alert], div[data-a-target=profile-image]").waitFor();
 
-		if (await page.locator('div[data-a-target="passport-modal"] div[role="alert"]').isVisible()) {
+		if (await page.locator("div[data-a-target=passport-modal] div[role=alert]").isVisible()) {
 			return Err(new Error("Wrong Twitch TOTP. Please check out your Twitch 2FA secret in your environment file."));
-		} else if (await page.locator('div[data-a-target="profile-image"]').isVisible()) {
+		} else if (await page.locator("div[data-a-target=profile-image]").isVisible()) {
 			return Ok();
 		}
 
@@ -86,7 +86,7 @@ export default <PlatformViaBrowser> {
 	async performUpdate(page: Page, image: string): Promise<Result> {
 		await page.goto(this.settingsUrl);
 
-		const editButton = page.locator('button[data-a-target="profile-image-upload-button"]');
+		const editButton = page.locator("button[data-a-target=profile-image-upload-button]");
 		await editButton.waitFor();
 
 		const fileChooser = page.waitForEvent("filechooser");
@@ -94,19 +94,19 @@ export default <PlatformViaBrowser> {
 		await editButton.click();
 		await page.locator("div.update-profile-picture-modal").waitFor();
 
-		const uploadButton = page.locator('button[data-a-target="upload-photo-input"]');
+		const uploadButton = page.locator("button[data-a-target=upload-photo-input]");
 		await page.waitForTimeout(500);
 		await uploadButton.click();
 
 		await (await fileChooser).setFiles(image);
 		await page.locator("canvas").waitFor();
 
-		const setButton = page.locator('div.profile-edit div[data-a-target="tw-core-button-label-text"]').last();
+		const setButton = page.locator("div.profile-edit div[data-a-target=tw-core-button-label-text]").last();
 		await setButton.waitFor();
 		await setButton.click();
 
 		try {
-			await page.locator('div.profile-image-setting div[role="alert"]').waitFor();
+			await page.locator("div.profile-image-setting div[role=alert]").waitFor();
 
 			return Ok();
 		} catch {

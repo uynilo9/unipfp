@@ -38,7 +38,7 @@ export default <PlatformViaBrowser> {
 		await typeLikeAHuman(page, "#login_field", username);
 		await typeLikeAHuman(page, "#password", password);
 
-		await page.click('input[type="submit"]');
+		await page.click("input[type=submit]");
 		await page.locator("#js-flash-container div.flash-error, body.logged-in, #app_totp").waitFor();
 
 		if (await page.locator("#js-flash-container div.flash-error").isVisible()) {
@@ -82,10 +82,10 @@ export default <PlatformViaBrowser> {
 	async performUpdate(page: Page, image: string): Promise<Result> {
 		await page.goto(this.settingsUrl);
 
-		const imageInput = page.locator('input[type="file"]#avatar_upload');
+		const imageInput = page.locator("input[type=file]#avatar_upload");
 		await imageInput.setInputFiles(image);
 
-		const setButton = page.locator('#avatar-crop-form button[type="submit"]');
+		const setButton = page.locator("#avatar-crop-form button[type=submit]");
 		await setButton.waitFor();
 		await setButton.click();
 
