@@ -7,6 +7,7 @@ import { createBrowser } from "./utils/browser.ts";
 import Discord from "./plats/discord.ts";
 import GitHub from "./plats/github.ts";
 import Twitch from "./plats/twitch.ts";
+import TwitterX from "./plats/twitterx.ts";
 
 const img = "";
 
@@ -66,6 +67,11 @@ async function main() {
 	const twitch = await updatePfpViaBrowser(browser.value, Twitch);
 	if (twitch.isErr()) {
 		throw twitch.error;
+	}
+
+	const twitterx = await updatePfpViaBrowser(browser.value, TwitterX);
+	if (twitterx.isErr()) {
+		throw twitterx.error;
 	}
 
 	await browser.value.close();
