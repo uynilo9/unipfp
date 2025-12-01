@@ -29,4 +29,4 @@ export interface PlatformViaBrowser {
 	performUpdate(page: Page, image: string): Promise<Result>;
 }
 
-export type { Browser, BrowserContext, Page } from "playwright";
+export type { Browser, BrowserContext, FrameLocator, Page } from "playwright";

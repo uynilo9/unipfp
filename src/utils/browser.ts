@@ -1,5 +1,5 @@
 import { Err, Ok } from "../types.ts";
-import type { Browser, Page, Result } from "../types.ts";
+import type { Browser, FrameLocator, Page, Result } from "../types.ts";
 
 import { chromium } from "playwright-extra";
 
@@ -20,7 +20,7 @@ export async function createBrowser(): Promise<Result<Browser, unknown>> {
 	}
 }
 
-export async function typeLikeAHuman(page: Page, selector: string, text: string) {
+export async function typeLikeAHuman(page: Page | FrameLocator, selector: string, text: string) {
 	try {
 		const element = page.locator(selector);
 		await element.waitFor({ state: "visible" });
