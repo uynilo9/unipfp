@@ -21,9 +21,9 @@ export default <PlatformViaBrowser> {
 
 	async checkStatus(page: Page): Promise<Result<boolean>> {
 		await page.goto(this.loginUrl);
-		await page.locator('input[name="email"], section[aria-label="User area"]').waitFor();
+		await page.locator('input[name="email"], nav[class*="guilds"]').waitFor();
 
-		return Ok(await page.locator('section[aria-label="User area"]').isVisible());
+		return Ok(await page.locator('nav[class*="guilds"]').isVisible());
 	},
 
 	async performLogin(page: Page): Promise<Result> {
@@ -39,10 +39,10 @@ export default <PlatformViaBrowser> {
 		await typeLikeAHuman(page, 'input[name="password"]', password);
 
 		await page.click('button[type="submit"]');
-		await page.locator('form div[data-layout="vertical"] svg, section[aria-label="User area"], input[autocomplete="one-time-code"]').first().waitFor();
+		await page.locator('div[class*="helperTextContainer"], nav[class*="guilds"], input[autocomplete="one-time-code"]').first().waitFor();
 
-		if (await page.locator(`form div[data-layout="vertical"] svg`).first().isVisible()) {
-			switch (await page.locator(`form div[data-layout="vertical"] svg`).count()) {
+		if (await page.locator('div[class*="helperTextContainer"]').first().isVisible()) {
+			switch (await page.locator('div[class*="helperTextContainer"]').count()) {
 				case 1: {
 					return Err(new Error("New Discord account login location detected. Please check out your email inbox."));
 				}
@@ -53,7 +53,7 @@ export default <PlatformViaBrowser> {
 					return Err(new Error("Unexpected error occurred."));
 				}
 			}
-		} else if (await page.locator('section[aria-label="User area"]').isVisible()) {
+		} else if (await page.locator('nav[class*="guilds"]').isVisible()) {
 			return Ok();
 		} else if (await page.locator('input[autocomplete="one-time-code"]').isVisible()) {
 			return await this.performVerify(page);
@@ -79,11 +79,11 @@ export default <PlatformViaBrowser> {
 		await typeLikeAHuman(page, 'input[autocomplete="one-time-code"]', token.value);
 
 		await page.click('button[type="submit"]');
-		await page.locator('div[data-layout="vertical"]+div[style="color: var(--text-danger);"], section[aria-label="User area"]').waitFor();
+		await page.locator('div[class*="error"], nav[class*="guilds"]').waitFor();
 
-		if (await page.locator('div[data-layout="vertical"]+div[style="color: var(--text-danger);"]').isVisible()) {
+		if (await page.locator('div[class*="error"]').isVisible()) {
 			return Err(new Error("Wrong Discord TOTP. Please check out your Discord 2FA secret in your environment file."));
-		} else if (await page.locator('section[aria-label="User area"]').isVisible()) {
+		} else if (await page.locator('nav[class*="guilds"]').isVisible()) {
 			return Ok();
 		}
 
@@ -91,9 +91,9 @@ export default <PlatformViaBrowser> {
 	},
 
 	async performUpdate(page: Page, image: string): Promise<Result> {
-		await page.locator('button[aria-label="User Settings"]').click();
-		await page.locator('div[role="dialog"]').waitFor();
-		await page.locator('div[aria-label="Avatar"]').click();
+		await page.locator("section button").last().click();
+		await page.locator('div[role="dialog"] div[role="tablist"]').waitFor();
+		await page.locator('div[role="dialog"] div[role="tablist"]+div button').first().click();
 
 		const changeButton = page.locator('div[role="dialog"] h1+div button').first();
 		await changeButton.waitFor();
@@ -113,7 +113,7 @@ export default <PlatformViaBrowser> {
 		await applyButton.waitFor();
 		await applyButton.click();
 
-		const saveButton = page.locator('div[style="opacity: 1; transform: translateY(0%) translateZ(0px);"] button').last();
+		const saveButton = page.locator('div[class*="notice"] button').last();
 		await saveButton.waitFor();
 		await saveButton.click();
 
