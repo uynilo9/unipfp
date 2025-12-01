@@ -41,7 +41,7 @@ export default <PlatformViaBrowser> {
 			if (await page.locator("#js-flash-container div.flash-error").isVisible()) {
 				return Err(new Error("Wrong GitHub username or password. Please check out your environment file."));
 			} else if (await page.locator("body.logged-in").isVisible()) {
-				return Ok(null);
+				return Ok();
 			} else if (await page.locator("#app_totp").isVisible()) {
 				return await this.performVerify(page);
 			}
@@ -70,7 +70,7 @@ export default <PlatformViaBrowser> {
 			if (await page.locator("#js-flash-container div.flash-error").isVisible()) {
 				return Err(new Error("Wrong GitHub TOTP. Please check out your GitHub 2FA secret in your environment file."));
 			} else if (await page.locator("body.logged-in").isVisible()) {
-				return Ok(null);
+				return Ok();
 			}
 
 			return Err(new Error("Unexpected error occurred."));
@@ -92,7 +92,7 @@ export default <PlatformViaBrowser> {
 		try {
 			await page.locator("#js-flash-container div.flash-notice").waitFor();
 
-			return Ok(null);
+			return Ok();
 		} catch {
 			return Err(new Error("Unexpected error occurred."));
 		}

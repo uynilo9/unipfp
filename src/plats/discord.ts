@@ -51,7 +51,7 @@ export default <PlatformViaBrowser> {
 					}
 				}
 			} else if (await page.locator('section[aria-label="User area"]').isVisible()) {
-				return Ok(null);
+				return Ok();
 			} else if (await page.locator('input[autocomplete="one-time-code"]').isVisible()) {
 				return await this.performVerify(page);
 			}
@@ -81,7 +81,7 @@ export default <PlatformViaBrowser> {
 			if (await page.locator('div[data-layout="vertical"]+div[style="color: var(--text-danger);"]').isVisible()) {
 				return Err(new Error("Wrong Discord TOTP. Please check out your Discord 2FA secret in your environment file."));
 			} else if (await page.locator('section[aria-label="User area"]').isVisible()) {
-				return Ok(null);
+				return Ok();
 			}
 
 			return Err(new Error("Unexpected error occurred."));
@@ -120,7 +120,7 @@ export default <PlatformViaBrowser> {
 		try {
 			await saveButton.waitFor({ state: "hidden" });
 
-			return Ok(null);
+			return Ok();
 		} catch {
 			return Err(new Error("Unexpected error occurred."));
 		}

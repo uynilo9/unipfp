@@ -42,7 +42,7 @@ async function updatePfpViaBrowser(browser: Browser, platform: PlatformViaBrowse
 
 	await page.close();
 	await context.close();
-	return Ok(null);
+	return Ok();
 }
 
 async function main() {

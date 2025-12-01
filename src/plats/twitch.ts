@@ -42,7 +42,7 @@ export default <PlatformViaBrowser> {
 			if (await page.locator('div[data-a-target="passport-modal"] div[role="alert"]').isVisible()) {
 				return Err(new Error("Wrong Twitch username or password. Please check out your environment file."));
 			} else if (await page.locator('div[data-a-target="profile-image"]').isVisible()) {
-				return Ok(null);
+				return Ok();
 			} else if (await page.locator("#authenticator-token-input").isVisible()) {
 				return await this.performVerify(page);
 			}
@@ -74,7 +74,7 @@ export default <PlatformViaBrowser> {
 			if (await page.locator('div[data-a-target="passport-modal"] div[role="alert"]').isVisible()) {
 				return Err(new Error("Wrong Twitch TOTP. Please check out your Twitch 2FA secret in your environment file."));
 			} else if (await page.locator('div[data-a-target="profile-image"]').isVisible()) {
-				return Ok(null);
+				return Ok();
 			}
 
 			return Err(new Error("Unexpected error occurred."));
@@ -108,7 +108,7 @@ export default <PlatformViaBrowser> {
 		try {
 			await page.locator('div.profile-image-setting div[role="alert"]').waitFor();
 
-			return Ok(null);
+			return Ok();
 		} catch {
 			return Err(new Error("Unexpected error occurred."));
 		}
