@@ -7,6 +7,7 @@ import { createBrowser } from "./utils/browser.ts";
 import Discord from "./plats/discord.ts";
 import GitHub from "./plats/github.ts";
 import Plex from "./plats/plex.ts";
+import Steam from "./plats/steam.ts";
 import Twitch from "./plats/twitch.ts";
 import TwitterX from "./plats/twitterx.ts";
 
@@ -68,6 +69,11 @@ async function main() {
 	const plex = await updatePfpViaBrowser(browser.value, Plex);
 	if (plex.isErr()) {
 		throw plex.error;
+	}
+
+	const steam = await updatePfpViaBrowser(browser.value, Steam);
+	if (steam.isErr()) {
+		throw steam.error;
 	}
 
 	const twitch = await updatePfpViaBrowser(browser.value, Twitch);
