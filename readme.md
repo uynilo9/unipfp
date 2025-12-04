@@ -23,19 +23,12 @@ deno install
 
 3. Rename the `.env.example` file to `.env` and fill in the fields.
 
-4. Specify the pfp file name in the `main.ts` file.
-```ts
-const img = "path/to/your/pfp.jpg";
-```
-
 
 ## 📜 Usage
 
-0. Comment/uncomment the platforms you want in the `main.ts` file.
-
-1. Run the script:
+- Run the script:
 ```sh
-deno run start
+deno run unipfp
 ```
 
 
