@@ -7,7 +7,7 @@
     "include": ["src/"]
   },
   "tasks": {
-    "start": "deno run -A ./src/main.ts"
+    "unipfp": "deno run -A ./src/unipfp.ts"
   },
   "imports": {
     "@clack/prompts": "npm:@clack/prompts@^0.11.0",
