@@ -47,12 +47,12 @@ async function updatePfpViaBrowser(browser: Browser, platform: PlatformViaBrowse
 
 	await page.close();
 	await context.close();
-    /**
-     * NOTE: the whitespace at the end of the Ok message is intentionally added due to a bug of Clack.
-     * See the GitHub issue: https://github.com/bombshell-dev/clack/issues/427
-     * 
-     * TODO: remove it.
-     */
+	/**
+	 * NOTE: the whitespace at the end of the Ok message is intentionally added due to a bug of Clack.
+	 * See the GitHub issue: https://github.com/bombshell-dev/clack/issues/427
+	 *
+	 * TODO: remove it.
+	 */
 	return Ok(`Successfully updated pfp on ${platform.name}. `);
 }
 
@@ -115,72 +115,78 @@ async function main() {
 		Deno.exit(1);
 	}
 
+	/**
+	 * NOTE: the whitespace at the end of the Err messages are intentionally added due to a bug of Clack.
+	 * See the GitHub issue: https://github.com/bombshell-dev/clack/issues/427
+	 *
+	 * TODO: remove them.
+	 */
 	await clack.tasks([
-        {
-            enabled: platforms.includes("discord"),
-            title: "Starting to update your Discord pfp...",
-            task: async () => {
-                const discord = await updatePfpViaBrowser(browser.value, Discord, image);
-                if (discord.isErr()) {
-                    return discord.error.message;
-                }
-                return discord.value;
-            },
-        },
-        {
-            enabled: platforms.includes("github"),
-            title: "Starting to update your GitHub pfp...",
-            task: async () => {
-                const github = await updatePfpViaBrowser(browser.value, GitHub, image);
-                if (github.isErr()) {
-                    return github.error.message;
-                }
-                return github.value;
-            },
-        },
-        {
-            enabled: platforms.includes("plex"),
-            title: "Starting to update your Plex pfp...",
-            task: async () => {
-                const plex = await updatePfpViaBrowser(browser.value, Plex, image);
-                if (plex.isErr()) {
-                    return plex.error.message;
-                }
-                return plex.value;
-            },
-        },
 		{
-            enabled: platforms.includes("steam"),
+			enabled: platforms.includes("discord"),
+			title: "Starting to update your Discord pfp...",
+			task: async () => {
+				const discord = await updatePfpViaBrowser(browser.value, Discord, image);
+				if (discord.isErr()) {
+					return discord.error.message + " ";
+				}
+				return discord.value;
+			},
+		},
+		{
+			enabled: platforms.includes("github"),
+			title: "Starting to update your GitHub pfp...",
+			task: async () => {
+				const github = await updatePfpViaBrowser(browser.value, GitHub, image);
+				if (github.isErr()) {
+					return github.error.message + " ";
+				}
+				return github.value;
+			},
+		},
+		{
+			enabled: platforms.includes("plex"),
+			title: "Starting to update your Plex pfp...",
+			task: async () => {
+				const plex = await updatePfpViaBrowser(browser.value, Plex, image);
+				if (plex.isErr()) {
+					return plex.error.message + " ";
+				}
+				return plex.value;
+			},
+		},
+		{
+			enabled: platforms.includes("steam"),
 			title: "Starting to update your Steam pfp...",
 			task: async () => {
 				const steam = await updatePfpViaBrowser(browser.value, Steam, image);
 				if (steam.isErr()) {
-					return steam.error.message;
+					return steam.error.message + " ";
 				}
 				return steam.value;
 			},
 		},
-        {
-            enabled: platforms.includes("twitch"),
-            title: "Starting to update your Twitch pfp...",
-            task: async () => {
-                const twitch = await updatePfpViaBrowser(browser.value, Twitch, image);
-                if (twitch.isErr()) {
-                    return twitch.error.message;
-                }
-                return twitch.value;
-            },
-        },
 		{
-            enabled: platforms.includes("twitterx"),
+			enabled: platforms.includes("twitch"),
+			title: "Starting to update your Twitch pfp...",
+			task: async () => {
+				const twitch = await updatePfpViaBrowser(browser.value, Twitch, image);
+				if (twitch.isErr()) {
+					return twitch.error.message + " ";
+				}
+				return twitch.value;
+			},
+		},
+		{
+			enabled: platforms.includes("twitterx"),
 			title: "Starting to update your Twitter(X) pfp...",
 			task: async () => {
 				const twitterx = await updatePfpViaBrowser(browser.value, TwitterX, image);
 				if (twitterx.isErr()) {
-					return twitterx.error.message;
+					return twitterx.error.message + " ";
 				}
 
-                return twitterx.value;
+				return twitterx.value;
 			},
 		},
 	]);
