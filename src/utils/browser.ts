@@ -1,7 +1,7 @@
 import { Err, Ok } from "../types.ts";
 import type { Browser, FrameLocator, Page, Result } from "../types.ts";
 
-import { chromium } from "playwright-extra";
+import { chromium } from "playwright";
 
 export async function createBrowser(): Promise<Result<Browser, unknown>> {
 	try {
