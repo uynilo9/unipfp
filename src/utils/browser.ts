@@ -20,10 +20,10 @@ export async function createBrowser(): Promise<Result<Browser>> {
 	}
 }
 
-export async function typeLikeAHuman(page: Page | FrameLocator, selector: string, text: string) {
+export async function typeLikeAHuman(view: FrameLocator | Page, selector: string, text: string) {
 	try {
-		const element = page.locator(selector);
-		await element.waitFor({ state: "visible" });
+		const element = view.locator(selector);
+		await element.waitFor();
 		await element.pressSequentially(text, { delay: Math.floor(Math.random() * 100) + 50 });
 	} catch (err) {
 		throw new Error(`Could not type for some reason. See the error Playwright threw below:\n\n${err}`);
