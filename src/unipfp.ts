@@ -123,7 +123,7 @@ async function main() {
 	await clack.tasks([
 		{
 			enabled: platforms.includes("discord"),
-			title: "Starting to update your Discord pfp...",
+			title: "Starting to update your Discord pfp",
 			task: async () => {
 				const discord = await updatePfpViaBrowser(browser.value, Discord, image);
 				if (discord.isErr()) {
@@ -135,7 +135,7 @@ async function main() {
 		},
 		{
 			enabled: platforms.includes("github"),
-			title: "Starting to update your GitHub pfp...",
+			title: "Starting to update your GitHub pfp",
 			task: async () => {
 				const github = await updatePfpViaBrowser(browser.value, GitHub, image);
 				if (github.isErr()) {
@@ -147,7 +147,7 @@ async function main() {
 		},
 		{
 			enabled: platforms.includes("plex"),
-			title: "Starting to update your Plex pfp...",
+			title: "Starting to update your Plex pfp",
 			task: async () => {
 				const plex = await updatePfpViaBrowser(browser.value, Plex, image);
 				if (plex.isErr()) {
@@ -159,7 +159,7 @@ async function main() {
 		},
 		{
 			enabled: platforms.includes("steam"),
-			title: "Starting to update your Steam pfp...",
+			title: "Starting to update your Steam pfp",
 			task: async () => {
 				const steam = await updatePfpViaBrowser(browser.value, Steam, image);
 				if (steam.isErr()) {
@@ -171,7 +171,7 @@ async function main() {
 		},
 		{
 			enabled: platforms.includes("twitch"),
-			title: "Starting to update your Twitch pfp...",
+			title: "Starting to update your Twitch pfp",
 			task: async () => {
 				const twitch = await updatePfpViaBrowser(browser.value, Twitch, image);
 				if (twitch.isErr()) {
@@ -183,7 +183,7 @@ async function main() {
 		},
 		{
 			enabled: platforms.includes("twitterx"),
-			title: "Starting to update your Twitter(X) pfp...",
+			title: "Starting to update your Twitter(X) pfp",
 			task: async () => {
 				const twitterx = await updatePfpViaBrowser(browser.value, TwitterX, image);
 				if (twitterx.isErr()) {
