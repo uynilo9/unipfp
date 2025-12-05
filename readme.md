@@ -23,6 +23,9 @@ deno playwright install chromium
 ```
 
 3. Rename the `.env.example` file to `.env` and fill in the fields.
+```sh
+mv .env.example .env
+```
 
 
 ## 📜 Usage
