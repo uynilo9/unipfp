@@ -16,9 +16,10 @@ git clone https://github.com/uynilo9/unipfp.git
 cd unipfp
 ```
 
-2. Install the dependencies:
+2. Install the dependencies and the Chromium browser:
 ```sh
 deno install
+deno playwright install chromium
 ```
 
 3. Rename the `.env.example` file to `.env` and fill in the fields.
