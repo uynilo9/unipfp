@@ -28,12 +28,16 @@ async function updatePfpViaBrowser(browser: Browser, platform: PlatformViaBrowse
 
 	const accountLoggedIn = await platform.checkStatus(page);
 	if (accountLoggedIn.isErr()) {
+		await page.close();
+		await context.close();
 		return Err(accountLoggedIn.error);
 	}
 
 	if (accountLoggedIn.isOk() && !accountLoggedIn.value) {
 		const loggingIn = await platform.performLogin(page);
 		if (loggingIn.isErr()) {
+			await page.close();
+			await context.close();
 			return Err(loggingIn.error);
 		}
 	}
@@ -42,6 +46,8 @@ async function updatePfpViaBrowser(browser: Browser, platform: PlatformViaBrowse
 
 	const pfpUpdated = await platform.performUpdate(page, image);
 	if (pfpUpdated.isErr()) {
+		await page.close();
+		await context.close();
 		return Err(pfpUpdated.error);
 	}
 
