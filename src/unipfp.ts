@@ -109,9 +109,8 @@ async function main() {
 
 	const browser = await createBrowser();
 	if (browser.isErr()) {
-		clack.stream.error((function* () {
-			yield browser.error as string;
-		})());
+		clack.log.error(browser.error.message);
+		clack.outro("Missions failed.");
 		Deno.exit(1);
 	}
 
@@ -130,6 +129,7 @@ async function main() {
 				if (discord.isErr()) {
 					return discord.error.message + " ";
 				}
+
 				return discord.value;
 			},
 		},
@@ -141,6 +141,7 @@ async function main() {
 				if (github.isErr()) {
 					return github.error.message + " ";
 				}
+
 				return github.value;
 			},
 		},
@@ -152,6 +153,7 @@ async function main() {
 				if (plex.isErr()) {
 					return plex.error.message + " ";
 				}
+
 				return plex.value;
 			},
 		},
@@ -163,6 +165,7 @@ async function main() {
 				if (steam.isErr()) {
 					return steam.error.message + " ";
 				}
+
 				return steam.value;
 			},
 		},
@@ -174,6 +177,7 @@ async function main() {
 				if (twitch.isErr()) {
 					return twitch.error.message + " ";
 				}
+
 				return twitch.value;
 			},
 		},
@@ -191,9 +195,10 @@ async function main() {
 		},
 	]);
 
-	clack.outro("Missions completed.");
-
 	await browser.value.close();
+
+	clack.outro("Missions completed.");
+	Deno.exit(0);
 }
 
 await main();
