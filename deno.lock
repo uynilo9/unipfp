@@ -6,7 +6,7 @@
     "jsr:@std/fs@^1.0.20": "1.0.20",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/path@^1.1.3": "1.1.3",
-    "npm:@clack/prompts@0.11": "0.11.0",
+    "npm:@clack/prompts@^1.0.0-alpha.7": "1.0.0-alpha.7",
     "npm:@types/node@*": "24.2.0",
     "npm:playwright@^1.56.1": "1.56.1"
   },
@@ -35,15 +35,15 @@
     }
   },
   "npm": {
-    "@clack/core@0.5.0": {
-      "integrity": "sha512-p3y0FIOwaYRUPRcMO7+dlmLh8PSRcrjuTndsiA0WAFbWES0mLZlrjVoBRZ9DzkPFJZG6KGkJmoEAY0ZcVWTkow==",
+    "@clack/core@1.0.0-alpha.7": {
+      "integrity": "sha512-3vdh6Ar09D14rVxJZIm3VQJkU+ZOKKT5I5cC0cOVazy70CNyYYjiwRj9unwalhESndgxx6bGc/m6Hhs4EKF5XQ==",
       "dependencies": [
         "picocolors",
         "sisteransi"
       ]
     },
-    "@clack/prompts@0.11.0": {
-      "integrity": "sha512-pMN5FcrEw9hUkZA4f+zLlzivQSeQf5dRGJjSUbvVYDLvpKCdQx5OaknvKzgbtXOizhP+SJJJjqEbOe55uKKfAw==",
+    "@clack/prompts@1.0.0-alpha.7": {
+      "integrity": "sha512-BLB8LYOdfI4q6XzDl8la69J/y/7s0tHjuU1/5ak+o8yB2BPZBNE22gfwbFUIEmlq/BGBD6lVUAMR7w+1K7Pr6Q==",
       "dependencies": [
         "@clack/core",
         "picocolors",
@@ -91,7 +91,7 @@
       "jsr:@std/dotenv@~0.225.5",
       "jsr:@std/fs@^1.0.20",
       "jsr:@std/path@^1.1.3",
-      "npm:@clack/prompts@0.11",
+      "npm:@clack/prompts@^1.0.0-alpha.7",
       "npm:playwright@^1.56.1"
     ]
   }
