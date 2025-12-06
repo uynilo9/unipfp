@@ -103,6 +103,9 @@ async function main() {
 		Deno.exit(1);
 	}
 
+	if (platforms.includes("discord")) {
+		clack.log.warn("You may have to manually bypass Discord reCAPTCHA, as it sometimes shows up.");
+	}
 	if (platforms.includes("reddit")) {
 		clack.log.warn("You have to click the Reddit logo in the top left corner to bypass Reddit reCAPTCHA while status check.")
 	}
