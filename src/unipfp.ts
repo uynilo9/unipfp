@@ -11,6 +11,7 @@ import * as clack from "@clack/prompts";
 import Discord from "./plats/discord.ts";
 import GitHub from "./plats/github.ts";
 import Plex from "./plats/plex.ts";
+import Reddit from "./plats/reddit.ts";
 import Steam from "./plats/steam.ts";
 import Twitch from "./plats/twitch.ts";
 import TwitterX from "./plats/twitterx.ts";
@@ -90,6 +91,7 @@ async function main() {
 			{ value: "discord", label: "Discord", hint: "via browser" },
 			{ value: "github", label: "GitHub", hint: "via browser" },
 			{ value: "plex", label: "Plex", hint: "via browser" },
+			{ value: "reddit", label: "Reddit", hint: "via browser" },
 			{ value: "steam", label: "Steam", hint: "via browser" },
 			{ value: "twitch", label: "Twitch", hint: "via browser" },
 			{ value: "twitterx", label: "Twitter(X)", hint: "via browser" },
@@ -161,6 +163,18 @@ async function main() {
 				}
 
 				return plex.value;
+			},
+		},
+		{
+			enabled: platforms.includes("reddit"),
+			title: "Starting to update your Reddit pfp",
+			task: async () => {
+				const reddit = await updatePfpViaBrowser(browser.value, Reddit, image);
+				if (reddit.isErr()) {
+					return reddit.error.message + " ";
+				}
+
+				return reddit.value;
 			},
 		},
 		{
