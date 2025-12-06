@@ -103,6 +103,10 @@ async function main() {
 		Deno.exit(1);
 	}
 
+	if (platforms.includes("reddit")) {
+		clack.log.warn("You have to click the Reddit logo in the top left corner to bypass Reddit reCAPTCHA while status check.")
+	}
+
 	const comfirm = await clack.confirm({
 		message: "Are you sure to update your pfp?",
 		active: "Yes",
