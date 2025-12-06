@@ -29,7 +29,7 @@ export default <PlatformViaBrowser> {
 		return Ok(await page.locator("input[type=password]").isHidden());
 	},
 
-	async performLogin(page: Page) {
+	async performLogin(page: Page): Promise<Result> {
 		// await page.goto(this.loginUrl);
 
 		const username = this.credentials.username;

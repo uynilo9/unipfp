@@ -26,7 +26,7 @@ export default <PlatformViaBrowser> {
 		return Ok(await page.locator("body.logged-in").isVisible());
 	},
 
-	async performLogin(page: Page) {
+	async performLogin(page: Page): Promise<Result> {
 		// await page.goto(this.loginUrl);
 
 		const username = this.credentials.username;
