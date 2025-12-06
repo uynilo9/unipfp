@@ -54,13 +54,8 @@ async function updatePfpViaBrowser(browser: Browser, platform: PlatformViaBrowse
 
 	await page.close();
 	await context.close();
-	/**
-	 * NOTE: the whitespace at the end of the Ok message is intentionally added due to a bug of Clack.
-	 * See the GitHub issue: https://github.com/bombshell-dev/clack/issues/427
-	 *
-	 * TODO: remove it.
-	 */
-	return Ok(`Successfully updated pfp on ${platform.name}. `);
+
+	return Ok(`Successfully updated pfp on ${platform.name}.`);
 }
 
 async function main() {
@@ -129,12 +124,6 @@ async function main() {
 		Deno.exit(1);
 	}
 
-	/**
-	 * NOTE: the whitespace at the end of the Err messages are intentionally added due to a bug of Clack.
-	 * See the GitHub issue: https://github.com/bombshell-dev/clack/issues/427
-	 *
-	 * TODO: remove them.
-	 */
 	await clack.tasks([
 		{
 			enabled: platforms.includes("discord"),
@@ -142,7 +131,7 @@ async function main() {
 			task: async () => {
 				const discord = await updatePfpViaBrowser(browser.value, Discord, image);
 				if (discord.isErr()) {
-					return discord.error.message + " ";
+					return discord.error.message;
 				}
 
 				return discord.value;
@@ -154,7 +143,7 @@ async function main() {
 			task: async () => {
 				const github = await updatePfpViaBrowser(browser.value, GitHub, image);
 				if (github.isErr()) {
-					return github.error.message + " ";
+					return github.error.message;
 				}
 
 				return github.value;
@@ -166,7 +155,7 @@ async function main() {
 			task: async () => {
 				const plex = await updatePfpViaBrowser(browser.value, Plex, image);
 				if (plex.isErr()) {
-					return plex.error.message + " ";
+					return plex.error.message;
 				}
 
 				return plex.value;
@@ -178,7 +167,7 @@ async function main() {
 			task: async () => {
 				const reddit = await updatePfpViaBrowser(browser.value, Reddit, image);
 				if (reddit.isErr()) {
-					return reddit.error.message + " ";
+					return reddit.error.message;
 				}
 
 				return reddit.value;
@@ -190,7 +179,7 @@ async function main() {
 			task: async () => {
 				const steam = await updatePfpViaBrowser(browser.value, Steam, image);
 				if (steam.isErr()) {
-					return steam.error.message + " ";
+					return steam.error.message;
 				}
 
 				return steam.value;
@@ -202,7 +191,7 @@ async function main() {
 			task: async () => {
 				const twitch = await updatePfpViaBrowser(browser.value, Twitch, image);
 				if (twitch.isErr()) {
-					return twitch.error.message + " ";
+					return twitch.error.message;
 				}
 
 				return twitch.value;
@@ -214,7 +203,7 @@ async function main() {
 			task: async () => {
 				const twitterx = await updatePfpViaBrowser(browser.value, TwitterX, image);
 				if (twitterx.isErr()) {
-					return twitterx.error.message + " ";
+					return twitterx.error.message;
 				}
 
 				return twitterx.value;
