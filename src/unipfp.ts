@@ -65,7 +65,7 @@ async function main() {
 		message: "Where's your pfp located?",
 		placeholder: "./pfp.jpg",
 		validate: (value) => {
-			if (value.length === 0) {
+			if (!value) {
 				return "Please enter a path.";
 			}
 
