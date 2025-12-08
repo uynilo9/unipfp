@@ -1,7 +1,7 @@
 import * as fs from "@std/fs";
 
 import { Err, Ok } from "./types.ts";
-import type { Browser, BrowserContext, PlatformViaBrowser, Result } from "./types.ts";
+import type { Browser, BrowserContext, PlatformViaApi, PlatformViaBrowser, Result } from "./types.ts";
 
 import { getImageType } from "./utils/image.ts";
 import { createBrowser } from "./utils/browser.ts";
@@ -10,11 +10,21 @@ import * as clack from "@clack/prompts";
 
 import Discord from "./plats/discord.ts";
 import GitHub from "./plats/github.ts";
+import GitLab from "./plats/gitlab.ts";
 import Plex from "./plats/plex.ts";
 import Reddit from "./plats/reddit.ts";
 import Steam from "./plats/steam.ts";
 import Twitch from "./plats/twitch.ts";
 import TwitterX from "./plats/twitterx.ts";
+
+async function updatePfpViaApi(platform: PlatformViaApi, image: string): Promise<Result<string>> {
+	const pfpUpdated = await platform.performUpdate(image);
+	if (pfpUpdated.isErr()) {
+		return Err(pfpUpdated.error);
+	}
+
+	return Ok(`Successfully updated pfp on ${platform.name}.`);
+}
 
 async function updatePfpViaBrowser(browser: Browser, platform: PlatformViaBrowser, image: string): Promise<Result<string>> {
 	let context: BrowserContext;
@@ -89,6 +99,7 @@ async function main() {
 		options: [
 			{ value: "discord", label: "Discord", hint: "via browser" },
 			{ value: "github", label: "GitHub", hint: "via browser" },
+			{ value: "gitlab", label: "GitLab", hint: "via API" },
 			{ value: "plex", label: "Plex", hint: "via browser" },
 			{ value: "reddit", label: "Reddit", hint: "via browser" },
 			{ value: "steam", label: "Steam", hint: "via browser" },
@@ -150,6 +161,18 @@ async function main() {
 				}
 
 				return github.value;
+			},
+		},
+		{
+			enabled: platforms.includes("gitlab"),
+			title: "Starting to update your GitLab pfp",
+			task: async () => {
+				const gitlab = await updatePfpViaApi(GitLab, image);
+				if (gitlab.isErr()) {
+					return gitlab.error.message;
+				}
+
+				return gitlab.value;
 			},
 		},
 		{
