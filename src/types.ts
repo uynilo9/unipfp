@@ -9,6 +9,17 @@ export type Result<T = void, E = Error> =
 export const Ok = <T = void>(value?: T): Result<T, never> => ({ value, isOk: () => true, isErr: () => false } as Result<T, never>);
 export const Err = <E>(error: E): Result<never, E> => ({ error, isOk: () => false, isErr: () => true } as Result<never, E>);
 
+export interface PlatformViaApi {
+	name: string;
+	apiEndpoint: string;
+
+	credentials: {
+		secret?: string;
+	};
+
+	performUpdate(image: string): Promise<Result>;
+}
+
 export interface PlatformViaBrowser {
 	name: string;
 	homeUrl: string;

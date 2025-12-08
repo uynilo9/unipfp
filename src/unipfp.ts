@@ -1,9 +1,9 @@
 import * as fs from "@std/fs";
-import * as path from "@std/path";
 
 import { Err, Ok } from "./types.ts";
 import type { Browser, BrowserContext, PlatformViaBrowser, Result } from "./types.ts";
 
+import { getImageType } from "./utils/image.ts";
 import { createBrowser } from "./utils/browser.ts";
 
 import * as clack from "@clack/prompts";
@@ -69,9 +69,13 @@ async function main() {
 				return "Please enter a path.";
 			}
 
-			const ext = path.extname(value).toLowerCase();
-			if (![".jpg", ".jpeg", ".png", ".gif"].includes(ext)) {
-				return "Please select a valid image file (.jpg, .jpeg, .png, .gif).";
+			const type = getImageType(value);
+			if (type.isErr()) {
+				return type.error.message;
+			}
+
+			if (!fs.existsSync(value)) {
+				return "Please enter a valid image file path.";
 			}
 		},
 	});
@@ -102,7 +106,7 @@ async function main() {
 		clack.log.warn("You may have to manually bypass Discord reCAPTCHA, as it sometimes shows up.");
 	}
 	if (platforms.includes("reddit")) {
-		clack.log.warn("You have to click the Reddit logo in the top left corner to bypass Reddit reCAPTCHA while status check.")
+		clack.log.warn("You have to click the Reddit logo in the top left corner to bypass Reddit reCAPTCHA while status check.");
 	}
 
 	const comfirm = await clack.confirm({
@@ -120,7 +124,6 @@ async function main() {
 	const browser = await createBrowser();
 	if (browser.isErr()) {
 		clack.log.error(browser.error.message);
-		clack.outro("Missions failed.");
 		Deno.exit(1);
 	}
 
