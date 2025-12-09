@@ -1,10 +1,8 @@
 import * as fs from "@std/fs";
 
-import { Err, Ok } from "./types.ts";
-import type { Browser, BrowserContext, PlatformViaApi, PlatformViaBrowser, Result } from "./types.ts";
-
 import { getImageType } from "./utils/image.ts";
 import { createBrowser } from "./utils/browser.ts";
+import { updatePfpViaApi, updatePfpViaBrowser } from "./utils/update.ts";
 
 import * as clack from "@clack/prompts";
 
@@ -16,57 +14,6 @@ import Reddit from "./plats/reddit.ts";
 import Steam from "./plats/steam.ts";
 import Twitch from "./plats/twitch.ts";
 import TwitterX from "./plats/twitterx.ts";
-
-async function updatePfpViaApi(platform: PlatformViaApi, image: string): Promise<Result<string>> {
-	const pfpUpdated = await platform.performUpdate(image);
-	if (pfpUpdated.isErr()) {
-		return Err(pfpUpdated.error);
-	}
-
-	return Ok(`Successfully updated pfp on ${platform.name}.`);
-}
-
-async function updatePfpViaBrowser(browser: Browser, platform: PlatformViaBrowser, image: string): Promise<Result<string>> {
-	let context: BrowserContext;
-
-	if (await fs.exists(platform.cookiesPath)) {
-		context = await browser.newContext({ storageState: platform.cookiesPath });
-	} else {
-		context = await browser.newContext();
-	}
-
-	const page = await context.newPage();
-
-	const accountLoggedIn = await platform.checkStatus(page);
-	if (accountLoggedIn.isErr()) {
-		await page.close();
-		await context.close();
-		return Err(accountLoggedIn.error);
-	}
-
-	if (accountLoggedIn.isOk() && !accountLoggedIn.value) {
-		const loggingIn = await platform.performLogin(page);
-		if (loggingIn.isErr()) {
-			await page.close();
-			await context.close();
-			return Err(loggingIn.error);
-		}
-	}
-
-	await context.storageState({ path: platform.cookiesPath });
-
-	const pfpUpdated = await platform.performUpdate(page, image);
-	if (pfpUpdated.isErr()) {
-		await page.close();
-		await context.close();
-		return Err(pfpUpdated.error);
-	}
-
-	await page.close();
-	await context.close();
-
-	return Ok(`Successfully updated pfp on ${platform.name}.`);
-}
 
 async function main() {
 	clack.intro("Unipfp");
