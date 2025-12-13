@@ -9,6 +9,7 @@ import * as clack from "@clack/prompts";
 import Discord from "./plats/discord.ts";
 import GitHub from "./plats/github.ts";
 import GitLab from "./plats/gitlab.ts";
+import Instagram from "./plats/instagram.ts";
 import Plex from "./plats/plex.ts";
 import Reddit from "./plats/reddit.ts";
 import Steam from "./plats/steam.ts";
@@ -47,6 +48,7 @@ async function main() {
 			{ value: "discord", label: "Discord", hint: "via browser" },
 			{ value: "github", label: "GitHub", hint: "via browser" },
 			{ value: "gitlab", label: "GitLab", hint: "via API" },
+			{ value: "instagram", label: "Instagram", hint: "via browser" },
 			{ value: "plex", label: "Plex", hint: "via browser" },
 			{ value: "reddit", label: "Reddit", hint: "via browser" },
 			{ value: "steam", label: "Steam", hint: "via browser" },
@@ -123,6 +125,18 @@ async function main() {
 				}
 
 				return gitlab.value;
+			},
+		},
+		{
+			enabled: platforms.includes("instagram"),
+			title: "Starting to update your Instagram pfp",
+			task: async () => {
+				const instagram = await updatePfpViaBrowser(browser.value, Instagram, image);
+				if (instagram.isErr()) {
+					return instagram.error.message;
+				}
+
+				return instagram.value;
 			},
 		},
 		{
