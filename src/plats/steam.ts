@@ -61,7 +61,7 @@ export default <PlatformViaBrowser> {
 
 			return Ok();
 		} catch {
-			return Err(new Error("Waiting for the user to verify the login timed out while trying to log into Steam."));
+			return Err(new Error("Something went wrong while waiting for the user to verify the login in Steam."));
 		}
 	},
 
