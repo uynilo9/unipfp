@@ -73,7 +73,7 @@ export default <PlatformViaBrowser> {
 		await typeLikeAHuman(page, "input[name=appOtp]", token.value);
 
 		const checkButton = page.locator("faceplate-tracker[noun=login] button").nth(1);
-		checkButton.waitFor();
+		await checkButton.waitFor();
 		await checkButton.click();
 
 		await page.locator('#one-time-code-appOtp svg[icon-name=error-outline], img[alt="User Avatar"]').waitFor();
