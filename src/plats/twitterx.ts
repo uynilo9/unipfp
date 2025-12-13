@@ -99,6 +99,8 @@ export default <PlatformViaBrowser> {
 	async performUpdate(page: Page, image: string): Promise<Result> {
 		await page.goto(this.settingsUrl);
 
+		const waitForUpdateResponse = page.waitForResponse((response) => response.url().includes("update_profile_image") && response.status() === 200);
+
 		const imageInput = page.locator("input[data-testid=fileInput]").nth(1);
 		await imageInput.setInputFiles(image);
 
@@ -111,8 +113,7 @@ export default <PlatformViaBrowser> {
 		await saveButton.click();
 
 		try {
-			await saveButton.waitFor({ state: "hidden" });
-			await page.waitForTimeout(500);
+			await waitForUpdateResponse;
 
 			return Ok();
 		} catch {
