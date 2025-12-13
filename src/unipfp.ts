@@ -66,6 +66,9 @@ async function main() {
 	if (platforms.includes("reddit")) {
 		clack.log.warn("You have to click the Reddit logo in the top left corner to bypass Reddit reCAPTCHA while status check.");
 	}
+	if (platforms.includes("steam")) {
+		clack.log.warn("You may have to manually comfirm your login on your Steam mobile app.");
+	}
 
 	const comfirm = await clack.confirm({
 		message: "Are you sure to update your pfp?",
