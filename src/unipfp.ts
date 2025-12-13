@@ -13,6 +13,7 @@ import Instagram from "./plats/instagram.ts";
 import Plex from "./plats/plex.ts";
 import Reddit from "./plats/reddit.ts";
 import Steam from "./plats/steam.ts";
+import Threads from "./plats/threads.ts";
 import Twitch from "./plats/twitch.ts";
 import TwitterX from "./plats/twitterx.ts";
 
@@ -52,6 +53,7 @@ async function main() {
 			{ value: "plex", label: "Plex", hint: "via browser" },
 			{ value: "reddit", label: "Reddit", hint: "via browser" },
 			{ value: "steam", label: "Steam", hint: "via browser" },
+			{ value: "threads", label: "Threads", hint: "via browser" },
 			{ value: "twitch", label: "Twitch", hint: "via browser" },
 			{ value: "twitterx", label: "Twitter(X)", hint: "via browser" },
 		],
@@ -70,6 +72,9 @@ async function main() {
 	}
 	if (platforms.includes("steam")) {
 		clack.log.warn("You may have to manually comfirm your login on your Steam mobile app.");
+	}
+	if (platforms.includes("threads")) {
+		clack.log.warn("You must fill in your Instagram username and password since you've selected Threads.");
 	}
 
 	const comfirm = await clack.confirm({
@@ -173,6 +178,18 @@ async function main() {
 				}
 
 				return steam.value;
+			},
+		},
+		{
+			enabled: platforms.includes("threads"),
+			title: "Starting to update your Threads pfp",
+			task: async () => {
+				const threads = await updatePfpViaBrowser(browser.value, Threads, image);
+				if (threads.isErr()) {
+					return threads.error.message;
+				}
+
+				return threads.value;
 			},
 		},
 		{
