@@ -26,7 +26,7 @@ export default <PlatformViaBrowser> {
 		}
 
 		await page.goto(this.loginUrl);
-		await page.locator(`#iFrameResizer0, a[href*=${username}"], ul.user-select-list`).waitFor();
+		await page.locator(`#iFrameResizer0, a[href*=\"${username}\"], ul.user-select-list`).waitFor();
 
 		if (await page.locator("ul.user-select-list").isVisible()) {
 			for (const user of await page.locator("div.username, div.managed-title").all()) {
