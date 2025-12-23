@@ -61,18 +61,20 @@ if (isCancel(platforms)) {
 	cancel("Mission cancelled.");
 	Deno.exit(0);
 }
-if (platforms.includes("discord")) {
-	log.warn("You may have to manually bypass Discord reCAPTCHA, as it sometimes shows up.");
-}
-if (platforms.includes("reddit")) {
-	log.warn("You have to click the Reddit logo in the top left corner to bypass Reddit reCAPTCHA while status check.");
-}
-if (platforms.includes("steam")) {
-	log.warn("You may have to manually comfirm your login on your Steam mobile app.");
-}
-if (platforms.includes("threads")) {
-	log.warn("You must fill in your Instagram username and password since you've selected Threads.");
-}
+
+const warning = {
+	discord: "You may have to manually bypass Discord reCAPTCHA, as it sometimes shows up.",
+	reddit: "You have to click the Reddit logo in the top left corner to bypass Reddit reCAPTCHA while status check.",
+	steam: "You may have to manually comfirm your login on your Steam mobile app.",
+	threads: "You must fill in your Instagram username and password since you've selected Threads.",
+};
+
+platforms.forEach((platform) => {
+	const message = warning[platform as keyof typeof warning];
+	if (message) {
+		log.warn(message);
+	}
+});
 
 const comfirm = await confirm({
 	message: "Are you sure to update your pfp?",
