@@ -14,6 +14,6 @@ export function getImageType(image: string): Result<string> {
 		case ".gif":
 			return Ok("image/gif");
 		default:
-			return Err(new Error("Unsupported the image type."));
+			return Err("Unsupported the image type.");
 	}
 }

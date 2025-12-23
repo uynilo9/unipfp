@@ -2,7 +2,7 @@ import type { Page } from "playwright";
 
 type ResultOk<T> = { value: T };
 type ResultErr<E> = { error: E };
-export type Result<T = void, E = Error> =
+export type Result<T = void, E = string> =
 	| (ResultOk<T> & { isOk(): this is ResultOk<T>; isErr(): this is ResultErr<E> })
 	| (ResultErr<E> & { isOk(): this is ResultOk<T>; isErr(): this is ResultErr<E> });
 
@@ -41,3 +41,4 @@ export interface PlatformViaBrowser {
 }
 
 export type { Browser, BrowserContext, FrameLocator, Page } from "playwright";
+export type { SpinnerResult } from "@clack/prompts";

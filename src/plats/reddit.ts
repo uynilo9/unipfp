@@ -32,7 +32,7 @@ export default <PlatformViaBrowser> {
 		const username = this.credentials.username;
 		const password = this.credentials.password;
 		if (!username || !password) {
-			return Err(new Error("Could not find the Reddit username or password. Please check out your environment file."));
+			return Err("Could not find the Reddit username or password. Please check out your environment file.");
 		}
 
 		await typeLikeAHuman(page, "input[name=username]", username);
@@ -46,24 +46,24 @@ export default <PlatformViaBrowser> {
 		]).catch(() => {});
 
 		if (await page.locator("#login-password svg[icon-name=error-outline]").isVisible()) {
-			return Err(new Error("Wrong Reddit username or password. Please check out your environment file."));
+			return Err("Wrong Reddit username or password. Please check out your environment file.");
 		} else if (await page.locator('img[alt="User Avatar"]').isVisible()) {
 			return Ok();
 		} else if (await page.locator("input[name=appOtp]").isVisible()) {
 			return await this.performVerify(page);
 		}
 
-		return Err(new Error("Unexpected error occurred while trying to log into Reddit."));
+		return Err("Unexpected error occurred while trying to log into Reddit.");
 	},
 
 	async performVerify(page: Page): Promise<Result> {
 		if (!await page.locator("input[name=appOtp]").isVisible()) {
-			return Err(new Error("Expected to find the TOTP input, but it was not found while trying to verify in Reddit."));
+			return Err("Expected to find the TOTP input, but it was not found while trying to verify in Reddit.");
 		}
 
 		const secret = this.credentials.secret;
 		if (!secret) {
-			return Err(new Error("Could not find the Reddit 2FA secret. Please check out in your environment file."));
+			return Err("Could not find the Reddit 2FA secret. Please check out in your environment file.");
 		}
 
 		const token = generateTotp(secret);
@@ -79,12 +79,12 @@ export default <PlatformViaBrowser> {
 		await page.locator('#one-time-code-appOtp svg[icon-name=error-outline], img[alt="User Avatar"]').waitFor();
 
 		if (await page.locator("#one-time-code-appOtp svg[icon-name=error-outline]").isVisible()) {
-			return Err(new Error("Wrong Reddit TOTP. Please check out your Reddit 2FA secret in your environment file."));
+			return Err("Wrong Reddit TOTP. Please check out your Reddit 2FA secret in your environment file.");
 		} else if (await page.locator('img[alt="User Avatar"]').isVisible()) {
 			return Ok();
 		}
 
-		return Err(new Error("Unexpected error occurred while trying to verify in Reddit."));
+		return Err("Unexpected error occurred while trying to verify in Reddit.");
 	},
 
 	async performUpdate(page: Page, image: string): Promise<Result> {
@@ -119,7 +119,7 @@ export default <PlatformViaBrowser> {
 
 			return Ok();
 		} catch {
-			return Err(new Error("Unexpected error occurred while trying to update your pfp in Reddit."));
+			return Err("Unexpected error occurred while trying to update your pfp in Reddit.");
 		}
 	},
 };

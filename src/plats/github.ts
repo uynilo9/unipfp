@@ -32,7 +32,7 @@ export default <PlatformViaBrowser> {
 		const username = this.credentials.username;
 		const password = this.credentials.password;
 		if (!username || !password) {
-			return Err(new Error("Could not find the GitHub username or password. Please check out your environment file."));
+			return Err("Could not find the GitHub username or password. Please check out your environment file.");
 		}
 
 		await typeLikeAHuman(page, "#login_field", username);
@@ -42,24 +42,24 @@ export default <PlatformViaBrowser> {
 		await page.locator("#js-flash-container div.flash-error, body.logged-in, #app_totp").waitFor();
 
 		if (await page.locator("#js-flash-container div.flash-error").isVisible()) {
-			return Err(new Error("Wrong GitHub username or password. Please check out your environment file."));
+			return Err("Wrong GitHub username or password. Please check out your environment file.");
 		} else if (await page.locator("body.logged-in").isVisible()) {
 			return Ok();
 		} else if (await page.locator("#app_totp").isVisible()) {
 			return await this.performVerify(page);
 		}
 
-		return Err(new Error("Unexpected error occurred while trying to log into GitHub."));
+		return Err("Unexpected error occurred while trying to log into GitHub.");
 	},
 
 	async performVerify(page: Page): Promise<Result> {
 		if (!await page.locator("#app_totp").isVisible()) {
-			return Err(new Error("Expected to find the TOTP input, but it was not found while trying to verify in GitHub."));
+			return Err("Expected to find the TOTP input, but it was not found while trying to verify in GitHub.");
 		}
 
 		const secret = this.credentials.secret;
 		if (!secret) {
-			return Err(new Error("Could not find the GitHub 2FA secret. Please check out your environment file."));
+			return Err("Could not find the GitHub 2FA secret. Please check out your environment file.");
 		}
 
 		const token = generateTotp(secret);
@@ -71,12 +71,12 @@ export default <PlatformViaBrowser> {
 		await page.locator("#js-flash-container div.flash-error, body.logged-in").waitFor();
 
 		if (await page.locator("#js-flash-container div.flash-error").isVisible()) {
-			return Err(new Error("Wrong GitHub TOTP. Please check out your GitHub 2FA secret in your environment file."));
+			return Err("Wrong GitHub TOTP. Please check out your GitHub 2FA secret in your environment file.");
 		} else if (await page.locator("body.logged-in").isVisible()) {
 			return Ok();
 		}
 
-		return Err(new Error("Unexpected error occurred while trying to verify in GitHub."));
+		return Err("Unexpected error occurred while trying to verify in GitHub.");
 	},
 
 	async performUpdate(page: Page, image: string): Promise<Result> {
@@ -94,7 +94,7 @@ export default <PlatformViaBrowser> {
 
 			return Ok();
 		} catch {
-			return Err(new Error("Unexpected error occurred while trying to update your pfp in GitHub."));
+			return Err("Unexpected error occurred while trying to update your pfp in GitHub.");
 		}
 	},
 };

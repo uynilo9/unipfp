@@ -1,63 +1,87 @@
 import * as fs from "@std/fs";
 
 import { Err, Ok } from "../types.ts";
-import type { Browser, BrowserContext, PlatformViaApi, PlatformViaBrowser, Result } from "../types.ts";
+import type { Browser, BrowserContext, PlatformViaApi, PlatformViaBrowser, Result, SpinnerResult } from "../types.ts";
 
-export function prepareUpdaterViaApi(image: string): (platform: PlatformViaApi) => () => Promise<Result<string>> {
+import { box } from "@clack/prompts";
+
+export function prepareUpdaterViaApi(image: string): (platform: PlatformViaApi) => (spinner: SpinnerResult) => Promise<Result> {
 	return (platform) => {
-		return async () => {
-			const pfpUpdated = await platform.performUpdate(image);
-			if (pfpUpdated.isErr()) {
-				return Err(pfpUpdated.error);
-			}
+		return async (spinner) => {
+			spinner.start(`Starting to update pfp on ${platform.name}`);
 
-			return Ok(`Successfully updated pfp on ${platform.name}.`);
+			try {
+				spinner.message(`Updating pfp on ${platform.name}`);
+				const pfpUpdated = await platform.performUpdate(image);
+				if (pfpUpdated.isErr()) {
+					throw pfpUpdated.error;
+				}
+
+				spinner.stop(`Successfully updated pfp on ${platform.name}.`);
+				return Ok();
+			} catch (err) {
+				spinner.error(`Something went wrong while updating your pfp on ${platform.name}.`);
+				box(`${err}`, " Error ", { width: "auto", rounded: true });
+				return Err(`${err}`);
+			}
 		};
 	};
 }
 
-export function prepareUpdaterViaBrowser(browser: Browser, image: string): (platform: PlatformViaBrowser) => () => Promise<Result<string>> {
+export function prepareUpdaterViaBrowser(browser: Browser, image: string): (platform: PlatformViaBrowser) => (spinner: SpinnerResult) => Promise<Result> {
 	return (platform) => {
-		return async () => {
-			let context: BrowserContext;
+		return async (spinner) => {
+			spinner.start(`Starting to update pfp on ${platform.name}`);
 
-			if (await fs.exists(platform.cookiesPath)) {
-				context = await browser.newContext({ storageState: platform.cookiesPath });
-			} else {
-				context = await browser.newContext();
-			}
+			try {
+				let context: BrowserContext;
 
-			const page = await context.newPage();
+				if (await fs.exists(platform.cookiesPath)) {
+					context = await browser.newContext({ storageState: platform.cookiesPath });
+				} else {
+					context = await browser.newContext();
+				}
 
-			const accountLoggedIn = await platform.checkStatus(page);
-			if (accountLoggedIn.isErr()) {
-				await page.close();
-				await context.close();
-				return Err(accountLoggedIn.error);
-			}
+				const page = await context.newPage();
 
-			if (accountLoggedIn.isOk() && !accountLoggedIn.value) {
-				const loggingIn = await platform.performLogin(page);
-				if (loggingIn.isErr()) {
+				spinner.message(`Checking account status on ${platform.name}`);
+				const accountLoggedIn = await platform.checkStatus(page);
+				if (accountLoggedIn.isErr()) {
 					await page.close();
 					await context.close();
-					return Err(loggingIn.error);
+					throw accountLoggedIn.error;
 				}
-			}
 
-			await context.storageState({ path: platform.cookiesPath });
+				if (accountLoggedIn.isOk() && !accountLoggedIn.value) {
+					spinner.message(`Logging in to ${platform.name}`);
+					const loggingIn = await platform.performLogin(page);
+					if (loggingIn.isErr()) {
+						await page.close();
+						await context.close();
+						throw loggingIn.error;
+					}
+				}
 
-			const pfpUpdated = await platform.performUpdate(page, image);
-			if (pfpUpdated.isErr()) {
+				await context.storageState({ path: platform.cookiesPath });
+
+				spinner.message(`Updating pfp on ${platform.name}`);
+				const pfpUpdated = await platform.performUpdate(page, image);
+				if (pfpUpdated.isErr()) {
+					await page.close();
+					await context.close();
+					throw pfpUpdated.error;
+				}
+
 				await page.close();
 				await context.close();
-				return Err(pfpUpdated.error);
+
+				spinner.stop(`Successfully updated pfp on ${platform.name}.`);
+				return Ok();
+			} catch (err) {
+				spinner.error(`Something went wrong while updating your pfp on ${platform.name}.`);
+				box(`${err}`, " Error ", { width: "auto", rounded: true });
+				return Err(`${err}`);
 			}
-
-			await page.close();
-			await context.close();
-
-			return Ok(`Successfully updated pfp on ${platform.name}.`);
 		};
 	};
 }

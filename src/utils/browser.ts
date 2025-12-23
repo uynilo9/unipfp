@@ -16,7 +16,7 @@ export async function createBrowser(): Promise<Result<Browser>> {
 			}),
 		);
 	} catch (err) {
-		return Err(new Error(`Cound not create a Chromium browser for some reason. See the error Playwright threw below:\n\n${err}`));
+		return Err(`Cound not create a Chromium browser for some reason. See the error Playwright threw below:\n\n${err}`);
 	}
 }
 
@@ -26,6 +26,6 @@ export async function typeLikeAHuman(view: FrameLocator | Page, selector: string
 		await element.waitFor();
 		await element.pressSequentially(text, { delay: Math.floor(Math.random() * 100) + 50 });
 	} catch (err) {
-		throw new Error(`Could not type for some reason. See the error Playwright threw below:\n\n${err}`);
+		throw (`Could not type for some reason. See the error Playwright threw below:\n\n${err}`);
 	}
 }

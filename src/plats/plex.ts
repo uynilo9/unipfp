@@ -22,7 +22,7 @@ export default <PlatformViaBrowser> {
 	async checkStatus(page: Page): Promise<Result<boolean>> {
 		const username = this.credentials.username;
 		if (!username) {
-			return Err(new Error("Could not find the Plex username. Please check out your environment file."));
+			return Err("Could not find the Plex username. Please check out your environment file.");
 		}
 
 		await page.goto(this.loginUrl);
@@ -36,7 +36,7 @@ export default <PlatformViaBrowser> {
 				}
 			}
 
-			return Err(new Error("Could not find the username while trying to select user in Plex. Please check out your environment file."));
+			return Err("Could not find the username while trying to select user in Plex. Please check out your environment file.");
 		}
 
 		return Ok(await page.locator("#iFrameResizer0").isHidden());
@@ -51,7 +51,7 @@ export default <PlatformViaBrowser> {
 		const username = this.credentials.username;
 		const password = this.credentials.password;
 		if (!username || !password) {
-			return Err(new Error("Could not find the Plex username or password. Please check out your environment file."));
+			return Err("Could not find the Plex username or password. Please check out your environment file.");
 		}
 
 		await typeLikeAHuman(frame, "#email", username);
@@ -61,26 +61,26 @@ export default <PlatformViaBrowser> {
 		await frame.locator('span[style*="color: rgb(240, 100, 100);"], button[data-testid=navbarAccountMenuTrigger], #verificationCode').waitFor();
 
 		if (await frame.locator('span[style*="color: rgb(240, 100, 100);"]').isVisible()) {
-			return Err(new Error("Wrong Plex username or password. Please check out your environment file."));
+			return Err("Wrong Plex username or password. Please check out your environment file.");
 		} else if (await frame.locator("button[data-testid=navbarAccountMenuTrigger]").isVisible()) {
 			return Ok();
 		} else if (await frame.locator("#verificationCode").isVisible()) {
 			return await this.performVerify(page);
 		}
 
-		return Err(new Error("Unexpected error occurred while trying to log into Plex."));
+		return Err("Unexpected error occurred while trying to log into Plex.");
 	},
 
 	async performVerify(page: Page): Promise<Result> {
 		const frame = page.frameLocator("#iFrameResizer0");
 
 		if (!await frame.locator("#verificationCode").isVisible()) {
-			return Err(new Error("Expected to find the TOTP input, but it was not found while trying to verify in Plex."));
+			return Err("Expected to find the TOTP input, but it was not found while trying to verify in Plex.");
 		}
 
 		const secret = this.credentials.secret;
 		if (!secret) {
-			return Err(new Error("Could not find the Plex 2FA secret. Please check out your environment file."));
+			return Err("Could not find the Plex 2FA secret. Please check out your environment file.");
 		}
 
 		const token = generateTotp(secret);
@@ -96,12 +96,12 @@ export default <PlatformViaBrowser> {
 		]).catch(() => {});
 
 		if (await frame.locator('span[style*="color: rgb(240, 100, 100);"]').isVisible()) {
-			return Err(new Error("Wrong Plex TOTP. Please check out your Plex 2FA secret in your environment file."));
+			return Err("Wrong Plex TOTP. Please check out your Plex 2FA secret in your environment file.");
 		} else if (await page.locator("button[data-testid=navbarAccountMenuTrigger]").isVisible()) {
 			return Ok();
 		}
 
-		return Err(new Error("Unexpected error occurred while trying to verify in Plex."));
+		return Err("Unexpected error occurred while trying to verify in Plex.");
 	},
 
 	async performUpdate(page: Page, image: string): Promise<Result> {
@@ -134,7 +134,7 @@ export default <PlatformViaBrowser> {
 
 			return Ok();
 		} catch {
-			return Err(new Error("Unexpected error occurred while trying to update your pfp in Plex."));
+			return Err("Unexpected error occurred while trying to update your pfp in Plex.");
 		}
 	},
 };

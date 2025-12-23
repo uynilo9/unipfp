@@ -16,7 +16,7 @@ export default <PlatformViaApi> {
 	async performUpdate(image: string): Promise<Result> {
 		const token = this.credentials.secret;
 		if (!token) {
-			return Err(new Error("Could not find the GitLab token. Please check out your environment file."));
+			return Err("Could not find the GitLab token. Please check out your environment file.");
 		}
 
 		try {
@@ -37,12 +37,12 @@ export default <PlatformViaApi> {
 				body: formData,
 			});
 			if (!response.ok) {
-				return Err(new Error(`Could not update your pfp on GitLab. See the error below: ${await response.text()} (${response.status})`));
+				throw (await response.json()).message;
 			}
 
 			return Ok();
 		} catch (err) {
-			return Err(new Error(`Could not update your pfp on GitLab. See the error below: ${err}`));
+			return Err(`${err}`);
 		}
 	},
 };

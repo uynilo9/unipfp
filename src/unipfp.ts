@@ -4,7 +4,7 @@ import { getImageType } from "./utils/image.ts";
 import { createBrowser } from "./utils/browser.ts";
 import { prepareUpdaterViaApi, prepareUpdaterViaBrowser } from "./utils/update.ts";
 
-import { cancel, confirm, intro, isCancel, log, multiselect, outro, spinner, text } from "@clack/prompts";
+import { box, cancel, confirm, intro, isCancel, log, multiselect, outro, spinner, text } from "@clack/prompts";
 
 import Discord from "./plats/discord.ts";
 import GitHub from "./plats/github.ts";
@@ -28,7 +28,7 @@ const image = await text({
 
 		const type = getImageType(value);
 		if (type.isErr()) {
-			return type.error.message;
+			return type.error;
 		}
 
 		if (!fs.existsSync(value)) {
@@ -86,7 +86,8 @@ await fs.ensureDir("cookies");
 
 const browser = await createBrowser();
 if (browser.isErr()) {
-	log.error(browser.error.message);
+	log.error(`Something went wrong while creating a Chromium browser.`);
+	box(browser.error, " Error ", { width: "auto", rounded: true });
 	Deno.exit(1);
 }
 
@@ -106,16 +107,7 @@ const updater = {
 };
 
 for (const platform of platforms) {
-	const s = spinner();
-	s.start(`Starting to update pfp on ${platform}`);
-
-	const result = await updater[platform]();
-	if (result.isErr()) {
-		s.error(result.error.message);
-		Deno.exit(1);
-	}
-
-	s.stop(result.value);
+	await updater[platform](spinner());
 }
 
 outro("Mission completed.");
