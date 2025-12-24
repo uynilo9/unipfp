@@ -11,27 +11,17 @@ export default <PlatformViaBrowser> {
 	homeUrl: "https://discord.com/channel/@me",
 	loginUrl: "https://discord.com/login",
 	settingsUrl: "",
-	cookiesPath: "cookies/discord.json",
+	cookiesPath: "",
 
 	credentials: {
 		email: Deno.env.get("DISCORD_EMAIL"),
-		username: Deno.env.get("DISCORD_USERNAME"),
 		password: Deno.env.get("DISCORD_PASSWORD"),
 		secret: Deno.env.get("DISCORD_SECRET"),
 	},
 
 	async checkStatus(page: Page): Promise<Result<boolean>> {
-		const username = this.credentials.username;
-		if (!username) {
-			return Err("Could not find the Discord username. Please check out your environment file.");
-		}
-
 		await page.goto(this.loginUrl);
-		await page.locator(`input[name=email], nav[class*=guilds], div[aria-label="${username}"]`).waitFor();
-
-		if (await page.locator(`div[aria-label="${username}"]`).isVisible()) {
-			await page.locator("section button").first().click();
-		}
+		await page.locator("input[name=email], nav[class*=guilds]").waitFor();
 
 		return Ok(await page.locator("nav[class*=guilds]").isVisible());
 	},
