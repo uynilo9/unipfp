@@ -3,7 +3,7 @@ import * as fs from "@std/fs";
 import { Err, Ok } from "../types.ts";
 import type { Browser, BrowserContext, PlatformViaApi, PlatformViaBrowser, Result, SpinnerResult } from "../types.ts";
 
-import { box } from "@clack/prompts";
+import { log } from "@clack/prompts";
 
 export function prepareUpdaterViaApi(image: string): (platform: PlatformViaApi) => (spinner: SpinnerResult) => Promise<Result> {
 	return (platform) => {
@@ -20,8 +20,8 @@ export function prepareUpdaterViaApi(image: string): (platform: PlatformViaApi) 
 				spinner.stop(`Successfully updated pfp on ${platform.name}.`);
 				return Ok();
 			} catch (err) {
-				spinner.error(`Something went wrong while updating your pfp on ${platform.name}.`);
-				box(`${err}`, " Error ", { width: "auto", rounded: true });
+				spinner.clear();
+				log.error(`Something went wrong while updating your pfp on ${platform.name}. See the error message below:\n\n${err}`);
 				return Err(`${err}`);
 			}
 		};
@@ -78,8 +78,8 @@ export function prepareUpdaterViaBrowser(browser: Browser, image: string): (plat
 				spinner.stop(`Successfully updated pfp on ${platform.name}.`);
 				return Ok();
 			} catch (err) {
-				spinner.error(`Something went wrong while updating your pfp on ${platform.name}.`);
-				box(`${err}`, " Error ", { width: "auto", rounded: true });
+				spinner.clear();
+				log.error(`Something went wrong while updating your pfp on ${platform.name}. See the error message below:\n\n${err}`);
 				return Err(`${err}`);
 			}
 		};
