@@ -10,7 +10,7 @@
     "unipfp": "deno run -A ./src/unipfp.ts"
   },
   "imports": {
-    "@clack/prompts": "npm:@clack/prompts@^1.0.0-alpha.7",
+    "@clack/prompts": "npm:@clack/prompts@1.0.0-alpha.9",
     "@hectorm/otpauth": "jsr:@hectorm/otpauth@^9.4.1",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.5",
     "@std/fs": "jsr:@std/fs@^1.0.20",
