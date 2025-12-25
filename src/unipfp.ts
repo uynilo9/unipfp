@@ -4,7 +4,7 @@ import { getImageType } from "./utils/image.ts";
 import { createBrowser } from "./utils/browser.ts";
 import { prepareUpdaterViaApi, prepareUpdaterViaBrowser } from "./utils/update.ts";
 
-import { box, cancel, confirm, intro, isCancel, log, multiselect, outro, spinner, text } from "@clack/prompts";
+import { cancel, confirm, intro, isCancel, log, multiselect, outro, spinner, text } from "@clack/prompts";
 
 import Discord from "./plats/discord.ts";
 import GitHub from "./plats/github.ts";
@@ -88,8 +88,7 @@ await fs.ensureDir("cookies");
 
 const browser = await createBrowser();
 if (browser.isErr()) {
-	log.error(`Something went wrong while creating a Chromium browser.`);
-	box(browser.error, " Error ", { width: "auto", rounded: true });
+	log.error(`Something went wrong while creating a Chromium browser. See the error message below:\n\n${browser.error}`);
 	Deno.exit(1);
 }
 
